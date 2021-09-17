@@ -8,7 +8,7 @@
  */
 export default class Top5Controller {
     constructor() {
-
+        this.dup = 0;
     }
 
     setModel(initModel) {
@@ -21,9 +21,11 @@ export default class Top5Controller {
         document.getElementById("add-list-button").onmousedown = (event) => {
             if (!document.getElementById("add-list-button").classList.contains("disabled"))
             {
-                let newList = this.model.addNewList("Untitled", ["?","?","?","?","?"]);            
+                let newList = this.model.addNewList("Untitled" + this.dup++, ["?","?","?","?","?"]);            
                 this.model.loadList(newList.id);
                 this.model.saveLists();
+                document.getElementById("add-list-button").classList.add("disabled");
+                document.getElementById("close-button").classList.remove("disabled");
             }
         }
         document.getElementById("undo-button").onmousedown = (event) => {
@@ -136,7 +138,7 @@ export default class Top5Controller {
             }
         }
 
-        // FOR DELETING THE LIST (TODO)
+        // FOR DELETING THE LIST
         document.getElementById("delete-list-" + id).onmousedown = (event) => {
             this.ignoreParentClick(event);
             // VERIFY THAT THE USER REALLY WANTS TO DELETE THE LIST
