@@ -96,17 +96,20 @@ export default class Top5View {
     unhighlightList(listId) {
         // HIGHLIGHT THE LIST
         let listCard = document.getElementById("top5-list-" + listId);
-        listCard.classList.add("unselected-list-card");
         listCard.classList.remove("selected-list-card");
+        listCard.classList.add("unselected-list-card");
     }
 
     updateToolbarButtons(model) {
         let tps = model.tps;
+        let uButton = document.getElementById("undo-button");
         if (!tps.hasTransactionToUndo()) {
-            this.disableButton("undo-button");
+            // this.disableButton("undo-button");
+            uButton.classList.add("disabled");
         }
         else {
-            this.enableButton("undo-button");
-        }   
+            // this.enableButton("undo-button");
+            uButton.classList.remove("disabled");
+        }
     }
 }

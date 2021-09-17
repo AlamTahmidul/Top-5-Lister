@@ -19,9 +19,12 @@ export default class Top5Controller {
     initHandlers() {
         // SETUP THE TOOLBAR BUTTON HANDLERS
         document.getElementById("add-list-button").onmousedown = (event) => {
-            let newList = this.model.addNewList("Untitled", ["?","?","?","?","?"]);            
-            this.model.loadList(newList.id);
-            this.model.saveLists();
+            if (!document.getElementById("add-list-button").classList.contains("disabled"))
+            {
+                let newList = this.model.addNewList("Untitled", ["?","?","?","?","?"]);            
+                this.model.loadList(newList.id);
+                this.model.saveLists();
+            }
         }
         document.getElementById("undo-button").onmousedown = (event) => {
             this.model.undo();
@@ -33,9 +36,12 @@ export default class Top5Controller {
 
             // AND FOR TEXT EDITING
             item.ondblclick = (ev) => {
-                if (this.model.hasCurrentList()) {
+                if (this.model.hasCurrentList()) {  
                     // CLEAR THE TEXT
                     item.innerHTML = "";
+
+                    // Disable Add-List while Editing
+                    document.getElementById("add-list-button").classList.add("disabled");
 
                     // ADD A TEXT FIELD
                     let textInput = document.createElement("input");
@@ -43,7 +49,7 @@ export default class Top5Controller {
                     textInput.setAttribute("id", "item-text-input-" + i);
                     textInput.setAttribute("value", this.model.currentList.getItemAt(i-1));
 
-                    item.appendChild(textInput);
+                    item.appendChild(textInput); // TEXT ADDED
 
                     textInput.ondblclick = (event) => {
                         this.ignoreParentClick(event);
@@ -51,10 +57,14 @@ export default class Top5Controller {
                     textInput.onkeydown = (event) => {
                         if (event.key === 'Enter') {
                             this.model.addChangeItemTransaction(i-1, event.target.value);
+                            document.getElementById("undo-button").classList.remove("disabled");
+                            document.getElementById("add-list-button").classList.remove("disabled");
                         }
                     }
                     textInput.onblur = (event) => {
                         this.model.addChangeItemTransaction(i-1, event.target.value);
+                        document.getElementById("undo-button").classList.remove("disabled");
+                        document.getElementById("add-list-button").classList.remove("disabled");
                         this.model.restoreList();
                     }
                 }
@@ -79,8 +89,8 @@ export default class Top5Controller {
             // EDIT THE NAME OF THE LIST
             list.ondblclick = (ev) => {
                 // TODO
+                console.log("Double Clicked List!");
             }
-
         }
         // FOR DELETING THE LIST
         document.getElementById("delete-list-" + id).onmousedown = (event) => {
@@ -94,17 +104,7 @@ export default class Top5Controller {
             deleteSpan.appendChild(document.createTextNode(listName));
             modal.classList.add("is-visible");
         }
-        // FOR ON MOUSE HOVER
-        list.onmouseover = (event) => {
-            // TODO
-            console.log("IT's HOVERED!!!");
 
-            // ON MOUSE OUT OF FOCUS
-            list.onmouseout = (event) => {
-                // TODO
-                console.log("IT's NOT HOVERED!!!");
-            }
-        }
     }
 
     ignoreParentClick(event) {
