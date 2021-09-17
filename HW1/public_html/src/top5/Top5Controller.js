@@ -71,7 +71,7 @@ export default class Top5Controller {
             }
         }
     }
-
+    // TODO: 
     registerListSelectHandlers(id) {
         let list = document.getElementById("top5-list-" + id);
         // FOR SELECTING THE LIST
@@ -86,9 +86,8 @@ export default class Top5Controller {
             let statusBar = document.getElementById("top5-statusbar");
             statusBar.innerHTML = "Top 5 " + cardText.innerHTML;
 
-            // EDIT THE NAME OF THE LIST
+            // TODO: EDIT THE NAME OF THE LIST
             list.ondblclick = (ev) => {
-                // TODO
                 console.log("Double Clicked List!");
             }
         }
