@@ -1,6 +1,7 @@
 import jsTPS from "../common/jsTPS.js"
 import Top5List from "./Top5List.js";
 import ChangeItem_Transaction from "./transactions/ChangeItem_Transaction.js"
+import ChangeList_Transaction from "./transactions/ChangeList_Transaction.js"
 
 /**
  * Top5Model.js
@@ -130,6 +131,15 @@ export default class Top5Model {
         }        
     }
 
+    highlightListByName(name) {
+        for (let i = 0; i < this.top5Lists.length; i++) {
+            if (this.top5Lists[i].name == name) {
+                this.view.update(this.top5Lists[i]);
+                this.view.highlightList(i);
+            }
+        }
+    }
+
     saveLists() {
         let top5ListsString = JSON.stringify(this.top5Lists);
         localStorage.setItem("recent_work", top5ListsString);
@@ -139,15 +149,36 @@ export default class Top5Model {
         this.view.update(this.currentList);
     }
 
+    refreshList() {
+        this.sortLists();
+        this.view.refreshLists(this.top5Lists);
+    }
+
     addChangeItemTransaction = (id, newText) => {
         // GET THE CURRENT TEXT
         let oldText = this.currentList.items[id];
+        // console.log(this.currentList);
         let transaction = new ChangeItem_Transaction(this, id, oldText, newText);
         this.tps.addTransaction(transaction);
     }
 
     changeItem(id, text) {
         this.currentList.items[id] = text;
+        this.view.update(this.currentList);
+        this.saveLists();
+    }
+
+    addChangeListTransaction = (id, newText) => {
+        // GET THE CURRENT TEXT
+        let oldText = this.currentList.name;
+        let transaction = new ChangeList_Transaction(this, id, oldText, newText);
+        this.tps.addTransaction(transaction);
+    }
+
+    changeList(id, text) {
+        // console.log(this.currentList.name);
+        this.currentList.name = text;
+        // console.log(this.currentList.name);
         this.view.update(this.currentList);
         this.saveLists();
     }
@@ -170,5 +201,9 @@ export default class Top5Model {
     clearTransactions() {
         this.tps.clearAllTransactions();
         this.view.updateToolbarButtons(this);
+    }
+
+    printTPS() {
+        console.log(this.tps.toString());
     }
 }

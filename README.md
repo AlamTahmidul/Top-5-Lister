@@ -1,6 +1,6 @@
 Required Functionality:
 
-- [ ] Editing the Name of a List
+- [X] Editing the Name of a List
 - [x] List Mouse-Over Highlighting
 - [ ] Deleting a List
 - [ ] Drag and Drop List Items
@@ -11,4 +11,4 @@ Required Functionality:
 - [ ] Foolproof Design
     - [ ] Add List Button
     - [ ] Undo/Redo Buttons
-    - [ ] Close List
+    - [X] Close List

@@ -13,9 +13,10 @@ export default class Top5View {
         // GET THE UI CONTROL WE WILL APPEND IT TO
         let listsElement = document.getElementById("sidebar-list");
         listsElement.innerHTML = "";
-
+        // console.log(lists);
         for (let i = 0; i < lists.length; i++) {
             let list = lists[i];
+            list.id = i;
             this.appendListToView(list);
         }
     }
@@ -91,6 +92,11 @@ export default class Top5View {
         let listCard = document.getElementById("top5-list-" + listId);
         listCard.classList.remove("unselected-list-card");
         listCard.classList.add("selected-list-card");
+
+        // ALSO, UPDATE THE BOTTOM STATUS BAR
+        let cardText = document.getElementById("list-card-text-" + listId);
+        let statusBar = document.getElementById("top5-statusbar");
+        statusBar.innerHTML = "Top 5 " + cardText.innerHTML;
     }
 
     unhighlightList(listId) {

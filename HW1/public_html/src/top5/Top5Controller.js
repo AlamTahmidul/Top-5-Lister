@@ -59,6 +59,7 @@ export default class Top5Controller {
                             this.model.addChangeItemTransaction(i-1, event.target.value);
                             document.getElementById("undo-button").classList.remove("disabled");
                             document.getElementById("add-list-button").classList.remove("disabled");
+                            this.model.restoreList();
                         }
                     }
                     textInput.onblur = (event) => { // On mouseclick away
@@ -72,44 +73,76 @@ export default class Top5Controller {
         }
     }
 
-    // TODO: 
     registerListSelectHandlers(id) {
         let list = document.getElementById("top5-list-" + id);
         // FOR SELECTING THE LIST
         list.onmousedown = (event) => {
-            this.model.unselectAll();
+            if (document.getElementById("close-button").classList.contains("disabled")
+                || document.getElementsByClassName("selected-list-card")[0].id == "top5-list-" + id)
+            {            
+                this.model.unselectAll();
 
-            // GET THE SELECTED LIST
-            this.model.loadList(id);
+                // GET THE SELECTED LIST
+                this.model.loadList(id);
 
-            // ALSO, UPDATE THE BOTTOM STATUS BAR
-            let cardText = document.getElementById("list-card-text-" + id);
-            let statusBar = document.getElementById("top5-statusbar");
-            statusBar.innerHTML = "Top 5 " + cardText.innerHTML;
+                // ENABLE CLOSE BUTTON WHILE THE LIST IS BEING EDITED
+                document.getElementById("close-button").classList.remove("disabled");    
+                document.getElementById("close-button").onmousedown = (e) => {
+                    this.model.unselectAll(); // UNSELECT LISTS
 
-            // ENABLE CLOSE BUTTON WHILE THE LIST IS BEING EDITED
-            document.getElementById("close-button").classList.remove("disabled");    
-            document.getElementById("close-button").onmousedown = (e) => {
-                this.model.unselectAll(); // UNSELECT LISTS
+                    // Clear INNER HTML for lists
+                    for (let i = 1; i <= 5; i++) {
+                        document.getElementById("item-" + i).innerText = "";
+                    }
+                    // Clear Status Bar
+                    document.getElementById("top5-statusbar").innerText = "";
+                    // CLOSE BUTTON DISABLED WHEN LIST IS NOT BEING EDITED
+                    document.getElementById("close-button").classList.add("disabled");
 
-                // Clear INNER HTML for lists
-                for (let i = 1; i <= 5; i++) {
-                    document.getElementById("item-" + i).innerText = "";
+                    // CLEAR TRANSACTION STACK
+                    this.model.clearTransactions();
                 }
-                // Clear Status Bar
-                document.getElementById("top5-statusbar").innerText = "";
-                // CLOSE BUTTON DISABLED WHEN LIST IS NOT BEING EDITED
-                document.getElementById("close-button").classList.add("disabled");
 
-                // TODO: CLEAR TRANSACTION STACK
-                this.model.clearTransactions();
-            }
+                // TODO: EDIT THE NAME OF THE LIST
+                list.ondblclick = (ev) => {
+                    // if (this.model.hasCurrentList()) { // Check if there is a valid list being edited
+                        document.getElementById("list-card-text-" + id).innerHTML = "";
+                        
+                        // Disable Add-List while Editing
+                        document.getElementById("add-list-button").classList.add("disabled");
 
-            // TODO: EDIT THE NAME OF THE LIST
-            list.ondblclick = (ev) => {
-                console.log("Double Clicked List!");
+                        // console.log(list.innerHTML);
+                        // ADD A TEXT FIELD
+                        let textInput = document.createElement("input");
+                        textInput.setAttribute("type", "text");
+                        textInput.setAttribute("id", "list-text-input-" + id);
+                        textInput.setAttribute("value", this.model.currentList.getName());
+
+                        list.appendChild(textInput); // TEXT ADDED
+                                                
+                        list.ondblclick = (e) => {
+                            this.ignoreParentClick(e);
+                        }
+
+                        textInput.onkeydown = (event) => { // On enter
+                            if (event.key === 'Enter') {
+                                this.model.addChangeListTransaction(id, event.target.value);
+                                document.getElementById("add-list-button").classList.remove("disabled");
+                                this.model.refreshList();
+                                this.model.highlightListByName(textInput.value);
+                            }
+                        }
+                        textInput.onblur = (event) => { // On mouseclick away
+                            this.model.addChangeListTransaction(id, event.target.value);
+                            document.getElementById("add-list-button").classList.remove("disabled");
+                            this.model.refreshList();
+                            this.model.highlightListByName(textInput.value);
+                        }
+                    // }
+                }
             }
         }
+
         // FOR DELETING THE LIST (TODO)
         document.getElementById("delete-list-" + id).onmousedown = (event) => {
             this.ignoreParentClick(event);
