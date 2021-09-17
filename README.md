@@ -5,7 +5,7 @@ Required Functionality:
 - [ ] Deleting a List
 - [ ] Drag and Drop List Items
 - [ ] Add a Redo Button
-- [ ] Add a Close Button
+- [x] Add a Close Button
 - [x] Show Loaded List Name in Status Bar
 - [x] Update Status Bar Style
 - [ ] Foolproof Design

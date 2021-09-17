@@ -166,4 +166,9 @@ export default class Top5Model {
             this.view.updateToolbarButtons(this); // TODO
         }
     }
+
+    clearTransactions() {
+        this.tps.clearAllTransactions();
+        this.view.updateToolbarButtons(this);
+    }
 }

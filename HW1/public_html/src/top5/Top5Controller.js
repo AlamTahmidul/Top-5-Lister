@@ -54,14 +54,14 @@ export default class Top5Controller {
                     textInput.ondblclick = (event) => {
                         this.ignoreParentClick(event);
                     }
-                    textInput.onkeydown = (event) => {
+                    textInput.onkeydown = (event) => { // On enter
                         if (event.key === 'Enter') {
                             this.model.addChangeItemTransaction(i-1, event.target.value);
                             document.getElementById("undo-button").classList.remove("disabled");
                             document.getElementById("add-list-button").classList.remove("disabled");
                         }
                     }
-                    textInput.onblur = (event) => {
+                    textInput.onblur = (event) => { // On mouseclick away
                         this.model.addChangeItemTransaction(i-1, event.target.value);
                         document.getElementById("undo-button").classList.remove("disabled");
                         document.getElementById("add-list-button").classList.remove("disabled");
@@ -71,6 +71,7 @@ export default class Top5Controller {
             }
         }
     }
+
     // TODO: 
     registerListSelectHandlers(id) {
         let list = document.getElementById("top5-list-" + id);
@@ -86,12 +87,30 @@ export default class Top5Controller {
             let statusBar = document.getElementById("top5-statusbar");
             statusBar.innerHTML = "Top 5 " + cardText.innerHTML;
 
+            // ENABLE CLOSE BUTTON WHILE THE LIST IS BEING EDITED
+            document.getElementById("close-button").classList.remove("disabled");    
+            document.getElementById("close-button").onmousedown = (e) => {
+                this.model.unselectAll(); // UNSELECT LISTS
+
+                // Clear INNER HTML for lists
+                for (let i = 1; i <= 5; i++) {
+                    document.getElementById("item-" + i).innerText = "";
+                }
+                // Clear Status Bar
+                document.getElementById("top5-statusbar").innerText = "";
+                // CLOSE BUTTON DISABLED WHEN LIST IS NOT BEING EDITED
+                document.getElementById("close-button").classList.add("disabled");
+
+                // TODO: CLEAR TRANSACTION STACK
+                this.model.clearTransactions();
+            }
+
             // TODO: EDIT THE NAME OF THE LIST
             list.ondblclick = (ev) => {
                 console.log("Double Clicked List!");
             }
         }
-        // FOR DELETING THE LIST
+        // FOR DELETING THE LIST (TODO)
         document.getElementById("delete-list-" + id).onmousedown = (event) => {
             this.ignoreParentClick(event);
             // VERIFY THAT THE USER REALLY WANTS TO DELETE THE LIST
