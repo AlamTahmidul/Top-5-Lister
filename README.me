@@ -1,22 +1,14 @@
 Required Functionality:
 
-- [] Editing the Name of a List - currently when the user double clicks on a list item one can change that list item. Implement a similar feature for the name of a list where the user can enter the name right there in a text input. Note, this must effect a permanent, meaning the list be saved with it's new name in local storage. The change should take effect when the user types ENTER or when the user clicks away on another control (i.e. it loses focus). Note that lists must always be sorted by name, so after changing the name of the list, be sure to sort them.
-
-- [] List Mouse-Over Highlighting - when the user mouses over one of the lists it should highlight it by changing its background to black and its text to white. Note, only one list should be highlighted at any time.
-
-- [] Deleting a List - when the user presses the X button on a list card it pops up a dialog box that prompts the user if they wish to delete the list or not. However, nothing happens as a result of clicking either button. Make sure that if the user clicks Confirm the affected list is deleted permanently and the dialog is closed. If the user presses Cancel the dialog is simply closed.
-
-- [] Drag and Drop List Items - when a list is loaded 5 items will be displayed. The user should be able to drag and drop any of them to another item location and all the items should adjust accordingly. So, if I drag the 5th item to the 1st, what was previously the 1st would slide down to the 2nd and so on. This action should be undoable and redoable and saved each time.
-
-- [] Add a Redo Button - the application currently has an undo button, which works for renaming an item. Add a redo button in the same style that will sit directly to its right. It should be a functioning redo button for both editing features (change item name, drag and drop item). Note, undo/redo need not work for list renaming. Note that undo/redo changes must always save results to local storage.
-
-- [] Add a Close Button - add a close button to the right of the redo button that when pressed will unselect the loaded list and clear the items, meaning no list is being edited.
-
-- [] Show Loaded List Name in Status Bar - at the bottom of the application there is a status bar but nothing is ever shown inside. Change this so that whenever a list is loaded the name of the list is displayed inside the status bar. So, if one selects their list of favorite games it would read Top 5 Games. When no list is selected for editing, like when a list is closed nothing should be shown here.
-
-- [] Update Status Bar Style - make sure the status bar at the bottom looks the same as in the example shown below. Background color, text color, font size, font family, and text alignment, everything.
-
-- [] Foolproof Design - it is important that you don't tempt users with features that are not usable. So, controls that are not usable should be either absent or visibly (i.e. greyed out) and functionally disabled:
-- [] Add List Button - if a list is in the process of being edited this button should be visibly and functionally disabled and only enabled if the edited list is first closed. Note that the provided example app does not work this way.
-- [] Undo/Redo Buttons - if there are no transactions to Undo, this button should be visibly and functionally disabled, the same goes for the Redo button. Note our example application does not do this.
-- [] Close List - if a list is not loaded for editing the Close List button should be disabled.
+- [] Editing the Name of a List
+- [] List Mouse-Over Highlighting
+- [] Deleting a List
+- [] Drag and Drop List Items
+- [] Add a Redo Button
+- [] Add a Close Button
+- [] Show Loaded List Name in Status Bar
+- [] Update Status Bar Style
+- [] Foolproof Design
+- [] Add List Button
+- [] Undo/Redo Buttons
+- [] Close List
