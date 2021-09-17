@@ -65,15 +65,19 @@ export default class Top5Model {
 
     sortLists() {
         this.top5Lists.sort((listA, listB) => {
-            if (listA.getName() < listB.getName()) {
-                return -1;
-            }
-            else if (listA.getName === listB.getName()) {
-                return 0;
-            }
-            else {
-                return 1;
-            }
+            if (listA != null && listB != null)
+            {
+                // console.log("" + listA.getName() + " => " + listB.getName());
+                if (listA.getName() < listB.getName()) {
+                    return -1;
+                }
+                else if (listA.getName() === listB.getName()) {
+                    return 0;
+                }
+                else {
+                    return 1;
+                }
+            }    
         });
         this.view.refreshLists(this.top5Lists);
     }
@@ -119,11 +123,13 @@ export default class Top5Model {
             this.top5Lists = [];
             for (let i = 0; i < listsJSON.length; i++) {
                 let listData = listsJSON[i];
-                let items = [];
-                for (let j = 0; j < listData.items.length; j++) {
-                    items[j] = listData.items[j];
+                if (listData != null) {
+                    let items = [];
+                    for (let j = 0; j < listData.items.length; j++) {
+                        items[j] = listData.items[j];
+                    }
+                    this.addNewList(listData.name, items);
                 }
-                this.addNewList(listData.name, items);
             }
             this.sortLists();   
             this.view.refreshLists(this.top5Lists);
@@ -145,6 +151,23 @@ export default class Top5Model {
     saveLists() {
         let top5ListsString = JSON.stringify(this.top5Lists);
         localStorage.setItem("recent_work", top5ListsString);
+    }
+
+    deleteList(name) {
+        let jsonParser = JSON.parse(localStorage.getItem("recent_work"));
+        for (let i in jsonParser) {
+            if (jsonParser[i].name == name) {
+                // console.log("Deleted " + jsonParser[i].name);
+                jsonParser.splice(i, 1);
+                break;
+            }
+        }
+        this.top5Lists = jsonParser; // New List is without the element
+        // console.log(jsonParser);
+        localStorage.clear();
+        this.saveLists();
+        this.loadLists();
+        this.closeList();
     }
 
     restoreList() {
@@ -203,6 +226,26 @@ export default class Top5Model {
     clearTransactions() {
         this.tps.clearAllTransactions();
         this.view.updateToolbarButtons(this);
+    }
+
+    closeList() {
+        this.unselectAll(); // UNSELECT LISTS
+
+        // Clear INNER HTML for lists
+        for (let i = 1; i <= 5; i++) {
+            document.getElementById("item-" + i).innerText = "";
+        }
+        // Clear Status Bar
+        document.getElementById("top5-statusbar").innerText = "";
+
+        // CLOSE BUTTON DISABLED WHEN LIST IS NOT BEING EDITED
+        document.getElementById("close-button").classList.add("disabled");
+
+        // Remove Restriction on Add-List
+        document.getElementById("add-list-button").classList.remove("disabled");
+
+        // CLEAR TRANSACTION STACK
+        this.clearTransactions();
     }
 
     printTPS() {

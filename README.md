@@ -2,7 +2,7 @@ Required Functionality:
 
 - [X] Editing the Name of a List
 - [x] List Mouse-Over Highlighting
-- [ ] Deleting a List
+- [x] Deleting a List
 - [ ] Drag and Drop List Items
 - [ ] Add a Redo Button
 - [x] Add a Close Button

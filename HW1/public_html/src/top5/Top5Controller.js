@@ -95,23 +95,7 @@ export default class Top5Controller {
                 // ENABLE CLOSE BUTTON WHILE THE LIST IS BEING EDITED
                 document.getElementById("close-button").classList.remove("disabled");
                 document.getElementById("close-button").onmousedown = (e) => {
-                    this.model.unselectAll(); // UNSELECT LISTS
-
-                    // Clear INNER HTML for lists
-                    for (let i = 1; i <= 5; i++) {
-                        document.getElementById("item-" + i).innerText = "";
-                    }
-                    // Clear Status Bar
-                    document.getElementById("top5-statusbar").innerText = "";
-
-                    // CLOSE BUTTON DISABLED WHEN LIST IS NOT BEING EDITED
-                    document.getElementById("close-button").classList.add("disabled");
-
-                    // Remove Restriction on Add-List
-                    document.getElementById("add-list-button").classList.remove("disabled");
-
-                    // CLEAR TRANSACTION STACK
-                    this.model.clearTransactions();
+                    this.model.closeList();
                 }
 
                 // TODO: EDIT THE NAME OF THE LIST
@@ -170,7 +154,7 @@ export default class Top5Controller {
             // On Confirm, Delete From Local Storage (permanent)
             document.getElementById("dialog-confirm-button").onmousedown = (e) => {
                 // TODO: DELETE PERMANENTLY
-                
+                this.model.deleteList(this.model.getList(id).getName());
                 // Remove modal
                 modal.classList.remove("is-visible");
             }

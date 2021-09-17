@@ -14,10 +14,14 @@ export default class Top5View {
         let listsElement = document.getElementById("sidebar-list");
         listsElement.innerHTML = "";
         // console.log(lists);
+        let num = 0;
         for (let i = 0; i < lists.length; i++) {
             let list = lists[i];
-            list.id = i;
-            this.appendListToView(list);
+            if (list != null) {
+                list.id = num;
+                this.appendListToView(list);
+                num++;
+            }
         }
     }
 
