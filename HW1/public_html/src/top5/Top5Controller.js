@@ -163,6 +163,17 @@ export default class Top5Controller {
             deleteSpan.innerHTML = "";
             deleteSpan.appendChild(document.createTextNode(listName));
             modal.classList.add("is-visible");
+            // On CANCEL, DO NOTHING
+            document.getElementById("dialog-cancel-button").onmousedown = (e) => {
+                modal.classList.remove("is-visible");
+            }
+            // On Confirm, Delete From Local Storage (permanent)
+            document.getElementById("dialog-confirm-button").onmousedown = (e) => {
+                // TODO: DELETE PERMANENTLY
+                
+                // Remove modal
+                modal.classList.remove("is-visible");
+            }
         }
 
     }
