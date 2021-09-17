@@ -9,6 +9,6 @@ Required Functionality:
 - [x] Show Loaded List Name in Status Bar
 - [x] Update Status Bar Style
 - [ ] Foolproof Design
-    - [ ] Add List Button
+    - [X] Add List Button
     - [ ] Undo/Redo Buttons
     - [X] Close List

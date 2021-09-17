@@ -60,6 +60,8 @@ export default class Top5Controller {
                             document.getElementById("undo-button").classList.remove("disabled");
                             document.getElementById("add-list-button").classList.remove("disabled");
                             this.model.restoreList();
+                            // DISABLE ADD-LIST while list is open
+                            document.getElementById("add-list-button").classList.add("disabled");
                         }
                     }
                     textInput.onblur = (event) => { // On mouseclick away
@@ -67,6 +69,8 @@ export default class Top5Controller {
                         document.getElementById("undo-button").classList.remove("disabled");
                         document.getElementById("add-list-button").classList.remove("disabled");
                         this.model.restoreList();
+                        // DISABLE ADD-LIST while list is open
+                        document.getElementById("add-list-button").classList.add("disabled");
                     }
                 }
             }
@@ -79,14 +83,17 @@ export default class Top5Controller {
         list.onmousedown = (event) => {
             if (document.getElementById("close-button").classList.contains("disabled")
                 || document.getElementsByClassName("selected-list-card")[0].id == "top5-list-" + id)
-            {            
+            {         
                 this.model.unselectAll();
 
                 // GET THE SELECTED LIST
                 this.model.loadList(id);
 
+                // DISABLE ADD-LIST while list is open
+                document.getElementById("add-list-button").classList.add("disabled");
+
                 // ENABLE CLOSE BUTTON WHILE THE LIST IS BEING EDITED
-                document.getElementById("close-button").classList.remove("disabled");    
+                document.getElementById("close-button").classList.remove("disabled");
                 document.getElementById("close-button").onmousedown = (e) => {
                     this.model.unselectAll(); // UNSELECT LISTS
 
@@ -96,8 +103,12 @@ export default class Top5Controller {
                     }
                     // Clear Status Bar
                     document.getElementById("top5-statusbar").innerText = "";
+
                     // CLOSE BUTTON DISABLED WHEN LIST IS NOT BEING EDITED
                     document.getElementById("close-button").classList.add("disabled");
+
+                    // Remove Restriction on Add-List
+                    document.getElementById("add-list-button").classList.remove("disabled");
 
                     // CLEAR TRANSACTION STACK
                     this.model.clearTransactions();
@@ -105,7 +116,7 @@ export default class Top5Controller {
 
                 // TODO: EDIT THE NAME OF THE LIST
                 list.ondblclick = (ev) => {
-                    // if (this.model.hasCurrentList()) { // Check if there is a valid list being edited
+                    if (this.model.hasCurrentList()) { // Check if there is a valid list being edited
                         document.getElementById("list-card-text-" + id).innerHTML = "";
                         
                         // Disable Add-List while Editing
@@ -127,18 +138,16 @@ export default class Top5Controller {
                         textInput.onkeydown = (event) => { // On enter
                             if (event.key === 'Enter') {
                                 this.model.addChangeListTransaction(id, event.target.value);
-                                document.getElementById("add-list-button").classList.remove("disabled");
                                 this.model.refreshList();
                                 this.model.highlightListByName(textInput.value);
                             }
                         }
                         textInput.onblur = (event) => { // On mouseclick away
                             this.model.addChangeListTransaction(id, event.target.value);
-                            document.getElementById("add-list-button").classList.remove("disabled");
                             this.model.refreshList();
                             this.model.highlightListByName(textInput.value);
                         }
-                    // }
+                    }
                 }
             }
         }

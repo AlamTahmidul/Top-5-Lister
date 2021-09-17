@@ -133,9 +133,11 @@ export default class Top5Model {
 
     highlightListByName(name) {
         for (let i = 0; i < this.top5Lists.length; i++) {
-            if (this.top5Lists[i].name == name) {
+            if (this.top5Lists[i].name == name && this.top5Lists[i].id == i) {
+                // console.log(this.top5Lists[i]);
                 this.view.update(this.top5Lists[i]);
                 this.view.highlightList(i);
+                break;
             }
         }
     }
