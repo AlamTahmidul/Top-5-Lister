@@ -190,7 +190,7 @@ export default class Top5Controller {
             }
             // On Confirm, Delete From Local Storage (permanent)
             document.getElementById("dialog-confirm-button").onmousedown = (e) => {
-                // TODO: DELETE PERMANENTLY
+                // DELETE PERMANENTLY
                 this.model.deleteList(this.model.getList(id).getName());
                 // Remove modal
                 modal.classList.remove("is-visible");
