@@ -121,5 +121,11 @@ export default class Top5View {
             // this.enableButton("undo-button");
             uButton.classList.remove("disabled");
         }
+        let rButton = document.getElementById("redo-button");
+        if (!tps.hasTransactionToRedo()) {
+            rButton.classList.add("disabled");
+        } else {
+            rButton.classList.remove("disabled");
+        }
     }
 }

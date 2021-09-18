@@ -30,8 +30,12 @@ export default class Top5Controller {
         }
         document.getElementById("undo-button").onmousedown = (event) => {
             this.model.undo();
+            this.model.restoreList();
         }
-
+        document.getElementById("redo-button").onmousedown = (event) => {
+            this.model.redo();
+            this.model.restoreList();
+        }
         // SETUP THE ITEM HANDLERS
         for (let i = 1; i <= 5; i++) {
             let item = document.getElementById("item-" + i);
@@ -60,8 +64,10 @@ export default class Top5Controller {
                         if (event.key === 'Enter') {
                             this.model.addChangeItemTransaction(i-1, event.target.value);
                             document.getElementById("undo-button").classList.remove("disabled");
+                            document.getElementById("redo-button").classList.add("disabled");
                             document.getElementById("add-list-button").classList.remove("disabled");
                             this.model.restoreList();
+
                             // DISABLE ADD-LIST while list is open
                             document.getElementById("add-list-button").classList.add("disabled");
                         }
@@ -70,13 +76,42 @@ export default class Top5Controller {
                         this.model.addChangeItemTransaction(i-1, event.target.value);
                         document.getElementById("undo-button").classList.remove("disabled");
                         document.getElementById("add-list-button").classList.remove("disabled");
+                        document.getElementById("redo-button").classList.add("disabled");
                         this.model.restoreList();
+
                         // DISABLE ADD-LIST while list is open
                         document.getElementById("add-list-button").classList.add("disabled");
                     }
                 }
             }
+            
+            // DRAG AND DROP FUNCTIONALITY
+              item.ondragstart = (event) => {
+                    // event.ignoreParentClick(event);
+                    event.dataTransfer.setData("text", i - 1);
+                    console.log("Starting Drag!");
+                }
+                item.ondragover = (event) => {
+                    event.preventDefault();
+                }
+                item.ondrop = (event) => {
+                    event.preventDefault();
+                    console.log("Dropped!");
+
+                    let data = event.dataTransfer.getData("text"); // Data holds start index
+                    let newIndex = event.target.id.substring(event.target.id.indexOf("-") + 1); // New Index; where to drop
+                    // console.log("Old Index: " + data + ", New Index: " + (newIndex - 1));
+
+                    // Add to Transaction Stack
+                    this.model.addMoveItemTransaction(data, newIndex - 1);
+                    document.getElementById("undo-button").classList.remove("disabled");
+
+                    this.model.saveLists();
+                    this.model.restoreList();
+                }
+            
         }
+        
     }
 
     registerListSelectHandlers(id) {
@@ -100,7 +135,7 @@ export default class Top5Controller {
                     this.model.closeList();
                 }
 
-                // TODO: EDIT THE NAME OF THE LIST
+                // EDIT THE NAME OF THE LIST
                 list.ondblclick = (ev) => {
                     if (this.model.hasCurrentList()) { // Check if there is a valid list being edited
                         document.getElementById("list-card-text-" + id).innerHTML = "";

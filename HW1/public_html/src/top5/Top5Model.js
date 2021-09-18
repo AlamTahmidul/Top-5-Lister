@@ -2,6 +2,7 @@ import jsTPS from "../common/jsTPS.js"
 import Top5List from "./Top5List.js";
 import ChangeItem_Transaction from "./transactions/ChangeItem_Transaction.js"
 import ChangeList_Transaction from "./transactions/ChangeList_Transaction.js"
+import MoveItem_Transaction from "./transactions/MoveItem_Transaction.js"
 
 /**
  * Top5Model.js
@@ -193,6 +194,11 @@ export default class Top5Model {
         this.saveLists();
     }
 
+    addMoveItemTransaction = (oldIndex, newIndex) => {
+        let transaction = new MoveItem_Transaction(this, oldIndex, newIndex);
+        this.tps.addTransaction(transaction);
+    }
+
     addChangeListTransaction = (id, newText) => {
         // GET THE CURRENT TEXT
         let oldText = this.currentList.name;
@@ -218,7 +224,7 @@ export default class Top5Model {
 
     redo() { // TODO
         if (this.tps.hasTransactionToRedo()) {
-            this.tps.redoTransaction(); // TODO
+            this.tps.doTransaction(); // TODO
             this.view.updateToolbarButtons(this); // TODO
         }
     }
