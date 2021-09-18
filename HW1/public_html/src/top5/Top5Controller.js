@@ -71,7 +71,6 @@ export default class Top5Controller {
 
                             // DISABLE ADD-LIST while list is open
                             document.getElementById("add-list-button").classList.add("disabled");
-                            item.setAttribute("draggable", "true");
                         }
                     }
                     textInput.onblur = (event) => { // On mouseclick away
@@ -83,7 +82,6 @@ export default class Top5Controller {
 
                         // DISABLE ADD-LIST while list is open
                         document.getElementById("add-list-button").classList.add("disabled");
-                        item.setAttribute("draggable", "true");
                     }
                 }
             }
