@@ -42,7 +42,8 @@ export default class Top5Controller {
 
             // AND FOR TEXT EDITING
             item.ondblclick = (ev) => {
-                if (this.model.hasCurrentList()) {  
+                if (this.model.hasCurrentList()) {
+                    item.setAttribute("draggable", "false");
                     // CLEAR THE TEXT
                     item.innerHTML = "";
 
@@ -89,14 +90,14 @@ export default class Top5Controller {
               item.ondragstart = (event) => {
                     // event.ignoreParentClick(event);
                     event.dataTransfer.setData("text", i - 1);
-                    console.log("Starting Drag!");
+                    // console.log("Starting Drag!");
                 }
                 item.ondragover = (event) => {
                     event.preventDefault();
                 }
                 item.ondrop = (event) => {
                     event.preventDefault();
-                    console.log("Dropped!");
+                    // console.log("Dropped!");
 
                     let data = event.dataTransfer.getData("text"); // Data holds start index
                     let newIndex = event.target.id.substring(event.target.id.indexOf("-") + 1); // New Index; where to drop
@@ -105,6 +106,7 @@ export default class Top5Controller {
                     // Add to Transaction Stack
                     this.model.addMoveItemTransaction(data, newIndex - 1);
                     document.getElementById("undo-button").classList.remove("disabled");
+                    document.getElementById("redo-button").classList.add("disabled");
 
                     this.model.saveLists();
                     this.model.restoreList();
@@ -158,13 +160,14 @@ export default class Top5Controller {
 
                         textInput.onkeydown = (event) => { // On enter
                             if (event.key === 'Enter') {
-                                this.model.addChangeListTransaction(id, event.target.value);
+                                // this.model.addChangeListTransaction(id, event.target.value);
+                                this.model.changeList(id, event.target.value);
                                 this.model.refreshList();
                                 this.model.highlightListByName(textInput.value);
                             }
                         }
                         textInput.onblur = (event) => { // On mouseclick away
-                            this.model.addChangeListTransaction(id, event.target.value);
+                            this.model.changeList(id, event.target.value);
                             this.model.refreshList();
                             this.model.highlightListByName(textInput.value);
                         }

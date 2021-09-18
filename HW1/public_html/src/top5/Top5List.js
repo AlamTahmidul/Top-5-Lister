@@ -32,12 +32,12 @@ export default class Top5List {
     }
 
     moveItem(oldIndex, newIndex) {
-        console.log("Old Index: " + oldIndex + ", New Index: " + newIndex);
-        console.log("Before: " + this.items);
+        // console.log("Old Index: " + oldIndex + ", New Index: " + newIndex);
+        // console.log("Before: " + this.items);
         let prevData = this.items.splice(oldIndex, 1);
-        console.log("Popped: " + prevData[0]);
+        // console.log("Popped: " + prevData[0]);
         this.items.splice(newIndex, 0, prevData[0]);
-        console.log("After: " + this.items);
+        // console.log("After: " + this.items);
         // console.log(this.items);
     }
 }
