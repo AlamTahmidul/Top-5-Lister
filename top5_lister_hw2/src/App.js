@@ -73,7 +73,7 @@ class App extends React.Component {
         });
     }
     renameList = (key, newName) => {
-        let newKeyNamePairs = [...this.state.sessionData.keyNamePairs];
+        let newKeyNamePairs = [...this.stwqate.sessionData.keyNamePairs];
         // NOW GO THROUGH THE ARRAY AND FIND THE ONE TO RENAME
         for (let i = 0; i < newKeyNamePairs.length; i++) {
             let pair = newKeyNamePairs[i];
@@ -113,8 +113,8 @@ class App extends React.Component {
             sessionData: prevState.sessionData
         }), () => {
             // ANY AFTER EFFECTS?
-            // TODO: Display
-            
+            // TODO: Display List Items
+
         });
     }
     // THIS FUNCTION BEGINS THE PROCESS OF CLOSING THE CURRENT LIST
