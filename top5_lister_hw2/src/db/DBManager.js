@@ -35,4 +35,20 @@ export default class DBManager {
         let sessionDataString = JSON.stringify(sessionData);
         localStorage.setItem("top5-data", sessionDataString);
     }
+
+    mutationDeleteList = (sessionData, keyNamePair) => {
+        console.log(sessionData.keyNamePairs);
+
+        for (let i = 0; i < sessionData.keyNamePairs.length; i++) {
+            console.log(sessionData.keyNamePairs[i]);
+            if (sessionData.keyNamePairs[i]["key"] === keyNamePair["key"]) {
+                sessionData.keyNamePairs.splice(i, 1);
+                break;
+            }
+        }
+        sessionData.counter -= 1;
+        localStorage.removeItem("top5-list-" + keyNamePair["key"]);
+        this.mutationUpdateSessionData(sessionData);
+        console.log(sessionData);
+    }
 }
