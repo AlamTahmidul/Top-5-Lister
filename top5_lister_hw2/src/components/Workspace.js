@@ -1,9 +1,50 @@
 import React from "react";
 
 export default class Workspace extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            list : this.props.currentList,
+            editActive : false,
+            editItemNum : "item-0",
+        }
+    }
+    handleClick = (event) => {
+        // HANDLE CLICKS
+        this.handleToggleEdit(event);
+    }
+    handleItemUpdate = (event) => {
+        // TODO: ADD TO TRANSACTION STACK -> SAVE ITEMS TO LOCAL STORAGE
+        let len = "item-".length;
+        let index = this.state.editItemNum.substring(len);
+        this.props.currentList.items[index] = event.target.value;
+        this.props.renameItemCallback(this.props.currentList);
+        console.log(this.props.currentList);
+    }
+    handleKeyPress = (event) => {
+        if (event.code === "Enter") {
+            this.handleItemUpdate(event);
+            this.handleToggleEdit(event);
+        }
+    }
+    handleBlur = () => {
+        // this.props.renameItemCallback(items);
+        this.handleToggleEdit();
+    }
+    handleToggleEdit = (event) => {
+        event.stopPropagation();
+        this.setState({
+            editActive : !this.state.editActive,
+            editItemNum : event.target.id,
+        });
+        // console.log(event.target.id);
+    }
+
     render() {
         const {
-            currentList
+            currentList,
+            // renameItemCallback,
         } = this.props;
         if (currentList != null) {
             return (
@@ -19,7 +60,17 @@ export default class Workspace extends React.Component {
                         <div id="edit-items">
                             {
                                 currentList.items.map((item, id) => (
-                                    <div id={"item-" + id} class="top5-item">{item}</div>
+                                    <div id={"item-" + id} className="top5-item" onClick={this.handleClick} draggable={!this.state.editActive}>
+                                        {
+                                            (this.state.editActive && this.state.editItemNum === "item-" + id) ? 
+                                            <input type="text" id={"item-text-input-" + id} 
+                                            onClick={(e) => e.stopPropagation()} 
+                                            onKeyPress={this.handleKeyPress} 
+                                            onBlur={this.handleItemUpdate}
+                                            defaultValue={item} /> 
+                                            : item
+                                        }
+                                        </div>
                                 ))
                             }
                         </div>
@@ -36,8 +87,6 @@ export default class Workspace extends React.Component {
                             <div className="item-number">3.</div>
                             <div className="item-number">4.</div>
                             <div className="item-number">5.</div>
-                        </div>
-                        <div id="edit-items">
                         </div>
                     </div>
                 </div>

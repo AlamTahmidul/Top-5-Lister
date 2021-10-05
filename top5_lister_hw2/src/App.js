@@ -73,7 +73,7 @@ class App extends React.Component {
         });
     }
     renameList = (key, newName) => {
-        let newKeyNamePairs = [...this.stwqate.sessionData.keyNamePairs];
+        let newKeyNamePairs = [...this.state.sessionData.keyNamePairs];
         // NOW GO THROUGH THE ARRAY AND FIND THE ONE TO RENAME
         for (let i = 0; i < newKeyNamePairs.length; i++) {
             let pair = newKeyNamePairs[i];
@@ -103,6 +103,34 @@ class App extends React.Component {
             list.name = newName;
             this.db.mutationUpdateList(list);
             this.db.mutationUpdateSessionData(this.state.sessionData);
+            // TODO: Clear Transaction Stack
+        });
+    }
+    // IMPLEMENTATION 1
+    // renameItem = (id) => {
+    //     let items = this.state.currentList.items
+    //     let length = "item-".length;
+    //     let pos = id.target.id.substring(length);
+    //     // console.log(items[pos]);
+    //     // items[pos] = "New Text " + id.target.id
+    //     console.log(items[pos]);
+    // }
+    // IMPLEMENTATION 2
+    renameItem = (itemList) => {
+        console.log(this.db.queryGetSessionData());
+        this.setState(prevState => ({
+            currentList: prevState.currentList,
+            sessionData: {
+                nextKey: prevState.sessionData.nextKey,
+                counter: prevState.sessionData.counter,
+                keyNamePairs: prevState.sessionData.keyNamePairs,
+            }
+        }), () => {
+            // AN AFTER EFFECT IS THAT WE NEED TO MAKE SURE
+            // THE LIST GETS UPDATED AND SAVED
+            this.db.mutationUpdateList(itemList);
+            this.db.mutationUpdateSessionData(this.state.sessionData);
+            // TODO: UNDO/REDO
         });
     }
     // THIS FUNCTION BEGINS THE PROCESS OF LOADING A LIST FOR EDITING
@@ -113,8 +141,6 @@ class App extends React.Component {
             sessionData: prevState.sessionData
         }), () => {
             // ANY AFTER EFFECTS?
-            // TODO: Display List Items
-
         });
     }
     // THIS FUNCTION BEGINS THE PROCESS OF CLOSING THE CURRENT LIST
@@ -125,6 +151,7 @@ class App extends React.Component {
             sessionData: this.state.sessionData
         }), () => {
             // ANY AFTER EFFECTS?
+            // TODO: Clear Transaction Stack, Make ADD LIST functional, Grey-out Undo/Redo and Close
         });
     }
     deleteList = () => {
@@ -133,6 +160,7 @@ class App extends React.Component {
         // DELETE AND MAKE THAT CONNECTION SO THAT THE
         // NAME PROPERLY DISPLAYS INSIDE THE MODAL
         this.showDeleteListModal();
+        // TODO: DELETE FROM LOCAL STORAGE
     }
     // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
     // TO SEE IF THEY REALLY WANT TO DELETE THE LIST
@@ -161,10 +189,13 @@ class App extends React.Component {
                     renameListCallback={this.renameList}
                 />
                 <Workspace
-                    currentList={this.state.currentList} />
+                    currentList={this.state.currentList} 
+                    renameItemCallback={this.renameItem}
+                    />
                 <Statusbar 
                     currentList={this.state.currentList} />
                 <DeleteModal
+                    listKeyPair={this.state.sessionData.listKeyPair}
                     hideDeleteListModalCallback={this.hideDeleteListModal}
                 />
             </div>

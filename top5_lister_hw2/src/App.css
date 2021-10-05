@@ -200,6 +200,10 @@ body {
   height:20%;
 }
 
+.top5-item:-moz-drag-over {
+  background-color: var(--swatch-accent);
+}
+
 .item-number {
   justify-content: center;
   width:100%;
