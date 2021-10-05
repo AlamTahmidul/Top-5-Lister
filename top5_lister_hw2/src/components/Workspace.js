@@ -21,16 +21,13 @@ export default class Workspace extends React.Component {
         this.props.currentList.items[index] = event.target.value;
         this.props.renameItemCallback(this.props.currentList);
         console.log(this.props.currentList);
+        this.handleToggleEdit(event);
     }
     handleKeyPress = (event) => {
         if (event.code === "Enter") {
             this.handleItemUpdate(event);
             this.handleToggleEdit(event);
         }
-    }
-    handleBlur = () => {
-        // this.props.renameItemCallback(items);
-        this.handleToggleEdit();
     }
     handleToggleEdit = (event) => {
         event.stopPropagation();
@@ -60,12 +57,12 @@ export default class Workspace extends React.Component {
                         <div id="edit-items">
                             {
                                 currentList.items.map((item, id) => (
-                                    <div id={"item-" + id} className="top5-item" onClick={this.handleClick} draggable={!this.state.editActive}>
+                                    <div id={"item-" + id} onClick={this.handleClick} className="top5-item" draggable={!this.state.editActive}>
                                         {
                                             (this.state.editActive && this.state.editItemNum === "item-" + id) ? 
                                             <input type="text" id={"item-text-input-" + id} 
                                             onClick={(e) => e.stopPropagation()} 
-                                            onKeyPress={this.handleKeyPress} 
+                                            onKeyPress={this.handleKeyPress}
                                             onBlur={this.handleItemUpdate}
                                             defaultValue={item} /> 
                                             : item

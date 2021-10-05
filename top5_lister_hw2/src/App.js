@@ -21,12 +21,13 @@ class App extends React.Component {
         // GET THE SESSION DATA FROM OUR DATA MANAGER
         let loadedSessionData = this.db.queryGetSessionData();
 
+        this.removeList = null;
+
         // SETUP THE INITIAL STATE
         this.state = {
             currentList : null,
             sessionData : loadedSessionData
         }
-        this.removeList = "";
     }
     sortKeyNamePairsByName = (keyNamePairs) => {
         keyNamePairs.sort((keyPair1, keyPair2) => {
@@ -140,10 +141,11 @@ class App extends React.Component {
         this.setState(prevState => ({
             currentList: null,
             listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
-            sessionData: this.state.sessionData
+            sessionData: this.statesessionData
         }), () => {
             // ANY AFTER EFFECTS?
             // TODO: Clear Transaction Stack, Make ADD LIST functional, Grey-out Undo/Redo and Close
+            console.log("CLOSED LIST?!");
         });
     }
     deleteList = (keyNamePair) => {
@@ -155,11 +157,12 @@ class App extends React.Component {
         this.showDeleteListModal(keyNamePair);
         // keyNamePair holds the proper id and name of list to delete
     }
-    confirmDeleteList = (keyNamePair) => {
+    confirmDeleteList = () => {
         // TODO: DELETE FROM LOCAL STORAGE
         // console.log(this.state["sessionData"]);
-        // let keyNamePair = this.removeList;
-        console.log("REMOVING" + keyNamePair);
+
+        let keyNamePair = this.removeList;
+        console.log("REMOVING " + keyNamePair.name + " with id: " + keyNamePair.id);
         
         this.db.mutationDeleteList(this.state["sessionData"], keyNamePair);
         let newSession = this.db.queryGetSessionData();
@@ -175,7 +178,7 @@ class App extends React.Component {
             // UPDATING LIST IN PERMANENT STORAGE
             // IS AN AFTER EFFECT
             // TODO: CLEAR TRANSACTION STACK
-            console.log(this.state.sessionData);
+            console.log("Confirm DeleteList? " + this.state["sessionData"]);
             
             this.hideDeleteListModal(); // CLOSE THE MODAL
         });
@@ -186,12 +189,18 @@ class App extends React.Component {
         let modal = document.getElementById("delete-modal");
         document.getElementsByClassName("dialog-header")[0].innerHTML = "Delete the Top 5 " + keyNamePair.name + " List?";
         modal.classList.add("is-visible");
-        document.getElementById("dialog-yes-button").addEventListener("click", this.confirmDeleteList(keyNamePair));
+        // document.getElementById("dialog-yes").onclick = this.confirmDeleteList(keyNamePair);
     }
     // THIS FUNCTION IS FOR HIDING THE MODAL
     hideDeleteListModal() {
         let modal = document.getElementById("delete-modal");
         modal.classList.remove("is-visible");
+    }
+    setListDeletion = (keyNamePair) => {
+        // this.removeList.key = keyNamePair["key"];
+        // this.removeList["name"] = keyNamePair["name"];
+        this.removeList = keyNamePair;
+        console.log("setListDeleteion: " + this.removeList);
     }
     render() {
         return (
@@ -207,6 +216,7 @@ class App extends React.Component {
                     deleteListCallback={this.deleteList}
                     loadListCallback={this.loadList}
                     renameListCallback={this.renameList}
+                    setListDeletionCallback={this.setListDeletion}
                 />
                 <Workspace
                     currentList={this.state.currentList} 
@@ -215,6 +225,7 @@ class App extends React.Component {
                 <Statusbar 
                     currentList={this.state.currentList} />
                 <DeleteModal
+                    listKeyPair={this.removeList}
                     confirmDeleteListCallback={this.confirmDeleteList}
                     hideDeleteListModalCallback={this.hideDeleteListModal}
                 />

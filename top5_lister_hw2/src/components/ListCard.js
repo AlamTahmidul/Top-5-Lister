@@ -27,6 +27,7 @@ export default class ListCard extends React.Component {
     handleDeleteList = (event) => {
         event.stopPropagation();
         this.props.deleteListCallback(this.props.keyNamePair);
+        this.props.setListDeletionCallback(this.props.keyNamePair);
     }
     handleToggleEdit = (event) => {
         this.setState({
@@ -50,7 +51,7 @@ export default class ListCard extends React.Component {
     }
 
     render() {
-        const { keyNamePair, selected } = this.props;
+        const { keyNamePair, selected, setListDeletionCallback } = this.props;
 
         if (this.state.editActive) {
             return (
