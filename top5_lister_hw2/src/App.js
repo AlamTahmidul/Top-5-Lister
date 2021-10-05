@@ -3,6 +3,9 @@ import './App.css';
 
 // IMPORT DATA MANAGEMENT AND TRANSACTION STUFF
 import DBManager from './db/DBManager';
+import jsTPS from './transaction/jsTPS';
+import ChangeItem_Transaction from './transaction/transactions/ChangeItem_Transaction';
+import MoveItem_Transaction from './transaction/transactions/MoveItem_Transaction';
 
 // THESE ARE OUR REACT COMPONENTS
 import DeleteModal from './components/DeleteModal';
@@ -21,6 +24,9 @@ class App extends React.Component {
         // GET THE SESSION DATA FROM OUR DATA MANAGER
         let loadedSessionData = this.db.queryGetSessionData();
 
+        // CREATE A TRANSACTION PROCESSING SYSTEM
+        this.tps = new jsTPS();
+
         this.removeList = null;
 
         // SETUP THE INITIAL STATE
@@ -28,6 +34,12 @@ class App extends React.Component {
             currentList : null,
             sessionData : loadedSessionData
         }
+    }
+    componentDidMount() {
+        document.addEventListener("keydown", this.handleKeyDown);
+    }
+    componentWillUnmount() {
+        document.removeEventListener("keydown", this.handleKeyDown);
     }
     sortKeyNamePairsByName = (keyNamePairs) => {
         keyNamePairs.sort((keyPair1, keyPair2) => {
@@ -72,41 +84,49 @@ class App extends React.Component {
             // IS AN AFTER EFFECT
             this.db.mutationCreateList(newList);
             this.db.mutationUpdateSessionData(this.state["sessionData"]);
+            
+            document.getElementById("close-button").classList.remove("top5-button-disabled");
+            document.getElementById("close-button").classList.add("top5-button");
+            document.getElementById("close-button").removeAttribute("disabled");
         });
     }
     renameList = (key, newName) => { // TODO: CLEAR TRANSACTION STACK
-        let newKeyNamePairs = [...this.state.sessionData.keyNamePairs];
-        // NOW GO THROUGH THE ARRAY AND FIND THE ONE TO RENAME
-        for (let i = 0; i < newKeyNamePairs.length; i++) {
-            let pair = newKeyNamePairs[i];
-            if (pair.key === key) {
-                pair.name = newName;
+        if (this.state.currentList != null && this.state.currentList.key === key)
+        {
+            // console.log(this.state.currentList);
+            let newKeyNamePairs = [...this.state.sessionData.keyNamePairs];
+            // NOW GO THROUGH THE ARRAY AND FIND THE ONE TO RENAME
+            for (let i = 0; i < newKeyNamePairs.length; i++) {
+                let pair = newKeyNamePairs[i];
+                if (pair.key === key) {
+                    pair.name = newName;
+                }
             }
-        }
-        this.sortKeyNamePairsByName(newKeyNamePairs);
+            this.sortKeyNamePairsByName(newKeyNamePairs);
 
-        // WE MAY HAVE TO RENAME THE currentList
-        let currentList = this.state.currentList;
-        if (currentList.key === key) {
-            currentList.name = newName;
-        }
-
-        this.setState(prevState => ({
-            currentList: prevState.currentList,
-            sessionData: {
-                nextKey: prevState.sessionData.nextKey,
-                counter: prevState.sessionData.counter,
-                keyNamePairs: newKeyNamePairs
+            // WE MAY HAVE TO RENAME THE currentList
+            let currentList = this.state.currentList;
+            if (currentList.key === key) {
+                currentList.name = newName;
             }
-        }), () => {
-            // AN AFTER EFFECT IS THAT WE NEED TO MAKE SURE
-            // THE TRANSACTION STACK IS CLEARED
-            let list = this.db.queryGetList(key);
-            list.name = newName;
-            this.db.mutationUpdateList(list);
-            this.db.mutationUpdateSessionData(this.state.sessionData);
-            // TODO: Clear Transaction Stack
-        });
+
+            this.setState(prevState => ({
+                currentList: prevState.currentList,
+                sessionData: {
+                    nextKey: prevState.sessionData.nextKey,
+                    counter: prevState.sessionData.counter,
+                    keyNamePairs: newKeyNamePairs
+                }
+            }), () => {
+                // AN AFTER EFFECT IS THAT WE NEED TO MAKE SURE
+                // THE TRANSACTION STACK IS CLEARED
+                let list = this.db.queryGetList(key);
+                list.name = newName;
+                this.db.mutationUpdateList(list);
+                this.db.mutationUpdateSessionData(this.state.sessionData);
+                // TODO: Clear Transaction Stack
+            });
+        }
     }
     // IMPLEMENTATION 2
     renameItem = (itemList) => {
@@ -122,20 +142,32 @@ class App extends React.Component {
             // AN AFTER EFFECT IS THAT WE NEED TO MAKE SURE
             // THE LIST GETS UPDATED AND SAVED
             this.db.mutationUpdateList(itemList);
-            this.db.mutationUpdateSessionData(this.state.sessionData);
+            // this.db.mutationUpdateSessionData(this.state.sessionData);
             // TODO: UNDO/REDO
         });
     }
     // THIS FUNCTION BEGINS THE PROCESS OF LOADING A LIST FOR EDITING
     loadList = (key) => {
+        if (this.state.currentList == null)
+        {       
         let newCurrentList = this.db.queryGetList(key);
-        this.setState(prevState => ({
-            currentList: newCurrentList,
-            sessionData: prevState.sessionData
-        }), () => {
-            // ANY AFTER EFFECTS?
-            // TODO: DISABLE ADD-LIST and REMOVE LIST FUNCTIONALITY
-        });
+            this.setState(prevState => ({
+                currentList: newCurrentList,
+                sessionData: prevState.sessionData
+            }), () => {
+                // ANY AFTER EFFECTS?
+                document.getElementById("close-button").classList.remove("top5-button-disabled");
+                document.getElementById("close-button").classList.add("top5-button");
+                document.getElementById("close-button").removeAttribute("disabled");
+
+                document.getElementById("add-list-button").classList.remove("top5-button");
+                document.getElementById("add-list-button").classList.add("top5-button-disabled");
+                document.getElementById("add-list-button").setAttribute("disabled", "true");
+
+                // console.log(document.getElementsByClassName("unselected-list-card"));
+                // console.log(this.state.currentList.items[0])
+            });
+        }
     }
     // THIS FUNCTION BEGINS THE PROCESS OF CLOSING THE CURRENT LIST
     closeCurrentList = () => {
@@ -147,6 +179,15 @@ class App extends React.Component {
             // ANY AFTER EFFECTS?
             // TODO: Clear Transaction Stack, Make ADD LIST functional, Grey-out Undo/Redo and Close
             console.log("CLOSED LIST?!");
+            document.getElementById("close-button").classList.remove("top5-button");
+            document.getElementById("close-button").classList.add("top5-button-disabled");
+            document.getElementById("close-button").setAttribute("disabled", "true");
+
+            document.getElementById("add-list-button").classList.remove("top5-button-disabled");
+            document.getElementById("add-list-button").classList.add("top5-button");
+            document.getElementById("add-list-button").removeAttribute("disabled");
+
+            this.clearTransactions();
         });
     }
     deleteList = (keyNamePair) => {
@@ -192,6 +233,64 @@ class App extends React.Component {
         modal.classList.add("is-visible");
         // document.getElementById("dialog-yes").onclick = this.confirmDeleteList(keyNamePair);
     }
+    updateToolbarButtons = () => { // UPDATE UNDO/REDO UI
+        if (this.tps.hasTransactionToUndo()) {
+            document.getElementById("undo-button").classList.remove("top5-button-disabled");
+            document.getElementById("undo-button").classList.add("top5-button");
+            document.getElementById("undo-button").removeAttribute("disabled");
+        } else {
+            document.getElementById("undo-button").classList.remove("top5-button");
+            document.getElementById("undo-button").classList.add("top5-button-disabled");
+            document.getElementById("undo-button").setAttribute("disabled", "true");
+            
+        }
+        if (this.tps.hasTransactionToRedo()) {
+            document.getElementById("redo-button").classList.remove("top5-button-disabled");
+            document.getElementById("redo-button").classList.add("top5-button");
+            document.getElementById("redo-button").removeAttribute("disabled");
+
+        } else {
+            document.getElementById("redo-button").classList.remove("top5-button");
+            document.getElementById("redo-button").classList.add("top5-button-disabled");
+            document.getElementById("redo-button").setAttribute("disabled", "true");
+        }
+    }
+    clearTransactions = () => {
+        this.tps.clearAllTransactions();
+        this.updateToolbarButtons();
+    }
+    addChangeItemTransaction = (id, newText) => {
+        // GET CURRENT TEXT
+        let oldText = this.state.currentList.items[id];
+        let transaction = new ChangeItem_Transaction(this, id, oldText, newText);
+        this.tps.addTransaction(transaction);
+        this.updateToolbarButtons();
+    }
+    addMoveItemTransaction = (oldIndex, newIndex) => {
+        let transaction = new MoveItem_Transaction(this, oldIndex, newIndex);
+        this.tps.addTransaction(transaction);
+    }
+    moveItem = (oldIndex, newIndex) => { // FOR DRAG AND DROP
+        console.log(this.state);
+        let prevData = this.state.currentList.items.splice(oldIndex, 1);
+        this.state.currentList.items.splice(newIndex, 0, prevData[0]);
+
+        // UPDATE DB
+        this.db.mutationUpdateList(this.state.currentList);
+        // this.db.mutationUpdateSessionData(this.state.sessionData);
+    }
+    undo = () => {
+        if (this.tps.hasTransactionToUndo()) {
+            this.tps.undoTransaction();
+            this.updateToolbarButtons();
+        }
+    }
+    redo = () => {
+        if (this.tps.hasTransactionToRedo()) {
+            this.tps.redoTransaction();
+            this.updateToolbarButtons();
+        }
+    }
     // THIS FUNCTION IS FOR HIDING THE MODAL
     hideDeleteListModal() {
         let modal = document.getElementById("delete-modal");
@@ -202,6 +301,17 @@ class App extends React.Component {
         // this.removeList["name"] = keyNamePair["name"];
         this.removeList = keyNamePair;
         console.log("setListDeleteion: " + this.removeList);
+    }
+    handleKeyDown = (event) => {
+        if (event.ctrlKey) {
+            if (event.key === "z") {
+                this.undo();
+                // CHANGE STATE
+            } else if (event.key === "y") {
+                this.redo();
+                // CHANGE STATE
+            }
+        }
     }
     render() {
         return (
@@ -222,6 +332,7 @@ class App extends React.Component {
                 <Workspace
                     currentList={this.state.currentList} 
                     renameItemCallback={this.renameItem}
+                    moveItemCallback={this.moveItem}
                     />
                 <Statusbar 
                     currentList={this.state.currentList} />

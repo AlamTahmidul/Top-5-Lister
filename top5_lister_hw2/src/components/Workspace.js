@@ -8,6 +8,8 @@ export default class Workspace extends React.Component {
             list : this.props.currentList,
             editActive : false,
             editItemNum : "item-0",
+            dragTextStart: {index: 0, text: ""},
+            dragTextEnd: {index: 0, text: ""},
         }
     }
     handleClick = (event) => {
@@ -20,7 +22,7 @@ export default class Workspace extends React.Component {
         let index = this.state.editItemNum.substring(len);
         this.props.currentList.items[index] = event.target.value;
         this.props.renameItemCallback(this.props.currentList);
-        console.log(this.props.currentList);
+        // console.log(this.props.currentList);
         this.handleToggleEdit(event);
     }
     handleKeyPress = (event) => {
@@ -37,7 +39,45 @@ export default class Workspace extends React.Component {
         });
         // console.log(event.target.id);
     }
+    handleDragStart = (event) => {
+        // this.state.setState((prevState) => {
+        //     dragTextStart: {index: event.}
+        // })
+        let initLoc = {index: event.target.id, text: event.target.innerText}
+        this.setState(prevState => ({dragTextStart: initLoc}));
+        console.log("DRAGGING START AT INDEX: " + event.target.id + " with VALUE: " + event.target.innerText);
 
+    }
+    handleDragOver = (event) => {
+        event.preventDefault();
+        this.setState(prevState => ({dragTextEnd: {index: event.target.id, text: event.target.innerText}}));
+        event.target.classList.remove("top5-item");
+        event.target.classList.add("top5-item-dragged-to");
+    }
+    handleDragLeave = (event) => {
+        event.preventDefault();
+        event.target.classList.remove("top5-item-dragged-to");
+        event.target.classList.add("top5-item");
+    }
+    handleDragEnd = (event) => {
+        event.preventDefault();
+        console.log("DRAGGING ENDED AT INDEX: " + event.target.id + " with VALUE: " + event.target.innerText);
+        this.setState(prevState => ({dragTextEnd: {index: event.target.id, text: event.target.innerText}}));
+        event.target.classList.remove("top5-item-dragged-to");
+        event.target.classList.add("top5-item");
+        this.handleAfterEffects();
+    }
+    handleAfterEffects = () => {
+        // SWAP THE ITEMS AND SAVE TO LOCAL STORAGE
+        console.log(this.state.dragTextEnd["index"]);
+        if (this.state.dragTextStart["index"] !== this.state.dragTextEnd["index"])
+        {
+            let lenItem = "item-".length;
+            let oldIndex = Number(this.state.dragTextStart["index"].substring(lenItem));
+            let newIndex = Number(this.state.dragTextEnd["index"].substring(lenItem));
+            this.props.moveItemCallback(oldIndex, newIndex);
+        }
+    }
     render() {
         const {
             currentList,
@@ -57,7 +97,7 @@ export default class Workspace extends React.Component {
                         <div id="edit-items">
                             {
                                 currentList.items.map((item, id) => (
-                                    <div id={"item-" + id} onClick={this.handleClick} className="top5-item" draggable={!this.state.editActive}>
+                                    <div id={"item-" + id} onClick={this.handleClick} className="top5-item" draggable={!this.state.editActive} onDragStart={this.handleDragStart} onDragOver={this.handleDragOver} onDrop={this.handleDragEnd} onDragLeave={this.handleDragLeave}>
                                         {
                                             (this.state.editActive && this.state.editItemNum === "item-" + id) ? 
                                             <input type="text" id={"item-text-input-" + id} 

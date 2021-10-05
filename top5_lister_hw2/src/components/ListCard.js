@@ -51,9 +51,9 @@ export default class ListCard extends React.Component {
     }
 
     render() {
-        const { keyNamePair, selected, setListDeletionCallback } = this.props;
+        const { keyNamePair, selected, currentList } = this.props;
 
-        if (this.state.editActive) {
+        if (this.state.editActive && currentList != null && currentList.key === keyNamePair.key) {
             return (
                 <input
                     id={"list-" + keyNamePair.name}
