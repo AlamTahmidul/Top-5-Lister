@@ -74,7 +74,7 @@ class App extends React.Component {
             this.db.mutationUpdateSessionData(this.state["sessionData"]);
         });
     }
-    renameList = (key, newName) => {
+    renameList = (key, newName) => { // TODO: CLEAR TRANSACTION STACK
         let newKeyNamePairs = [...this.state.sessionData.keyNamePairs];
         // NOW GO THROUGH THE ARRAY AND FIND THE ONE TO RENAME
         for (let i = 0; i < newKeyNamePairs.length; i++) {
@@ -134,6 +134,7 @@ class App extends React.Component {
             sessionData: prevState.sessionData
         }), () => {
             // ANY AFTER EFFECTS?
+            // TODO: DISABLE ADD-LIST and REMOVE LIST FUNCTIONALITY
         });
     }
     // THIS FUNCTION BEGINS THE PROCESS OF CLOSING THE CURRENT LIST
@@ -141,7 +142,7 @@ class App extends React.Component {
         this.setState(prevState => ({
             currentList: null,
             listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
-            sessionData: this.statesessionData
+            sessionData: this.state["sessionData"]
         }), () => {
             // ANY AFTER EFFECTS?
             // TODO: Clear Transaction Stack, Make ADD LIST functional, Grey-out Undo/Redo and Close
