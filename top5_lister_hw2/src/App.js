@@ -106,15 +106,6 @@ class App extends React.Component {
             // TODO: Clear Transaction Stack
         });
     }
-    // IMPLEMENTATION 1
-    // renameItem = (id) => {
-    //     let items = this.state.currentList.items
-    //     let length = "item-".length;
-    //     let pos = id.target.id.substring(length);
-    //     // console.log(items[pos]);
-    //     // items[pos] = "New Text " + id.target.id
-    //     console.log(items[pos]);
-    // }
     // IMPLEMENTATION 2
     renameItem = (itemList) => {
         console.log(this.db.queryGetSessionData());
