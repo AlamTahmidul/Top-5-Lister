@@ -20,8 +20,10 @@ export default class Workspace extends React.Component {
         // TODO: ADD TO TRANSACTION STACK -> SAVE ITEMS TO LOCAL STORAGE
         let len = "item-".length;
         let index = this.state.editItemNum.substring(len);
-        this.props.currentList.items[index] = event.target.value;
-        this.props.renameItemCallback(this.props.currentList);
+        // this.props.currentList.items[index] = event.target.value;
+        // this.props.renameItemCallback(this.props.currentList);
+        // this.props.renameItemCallback(index, event.target.value);
+        this.props.addChangeItemTransactionCallback(index, event.target.value);
         // console.log(this.props.currentList);
         this.handleToggleEdit(event);
     }
@@ -69,19 +71,19 @@ export default class Workspace extends React.Component {
     }
     handleAfterEffects = () => {
         // SWAP THE ITEMS AND SAVE TO LOCAL STORAGE
-        console.log(this.state.dragTextEnd["index"]);
+        // console.log(this.state.dragTextEnd["index"]);
         if (this.state.dragTextStart["index"] !== this.state.dragTextEnd["index"])
         {
             let lenItem = "item-".length;
             let oldIndex = Number(this.state.dragTextStart["index"].substring(lenItem));
             let newIndex = Number(this.state.dragTextEnd["index"].substring(lenItem));
-            this.props.moveItemCallback(oldIndex, newIndex);
+            // this.props.moveItemCallback(oldIndex, newIndex);
+            this.props.addMoveItemTransactionCallback(oldIndex, newIndex);
         }
     }
     render() {
         const {
             currentList,
-            // renameItemCallback,
         } = this.props;
         if (currentList != null) {
             return (

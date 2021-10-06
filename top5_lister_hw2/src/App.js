@@ -128,22 +128,34 @@ class App extends React.Component {
             });
         }
     }
-    // IMPLEMENTATION 2
-    renameItem = (itemList) => {
-        console.log(this.db.queryGetSessionData());
+    // // IMPLEMENTATION 2
+    // renameItem = (itemList) => {
+    //     console.log(this.db.queryGetSessionData());
+    //     this.setState(prevState => ({
+    //         currentList: prevState.currentList,
+    //         sessionData: {
+    //             nextKey: prevState.sessionData.nextKey,
+    //             counter: prevState.sessionData.counter,
+    //             keyNamePairs: prevState.sessionData.keyNamePairs,
+    //         }
+    //     }), () => {
+    //         // AN AFTER EFFECT IS THAT WE NEED TO MAKE SURE
+    //         // THE LIST GETS UPDATED AND SAVED
+    //         this.db.mutationUpdateList(itemList);
+
+    //         // TODO: UNDO/REDO
+            
+    //     });
+    // }
+    // Implementation 3
+    renameItem = (id, newText) => {
+        this.state.currentList.items.splice(id, 1, newText);
         this.setState(prevState => ({
-            currentList: prevState.currentList,
-            sessionData: {
-                nextKey: prevState.sessionData.nextKey,
-                counter: prevState.sessionData.counter,
-                keyNamePairs: prevState.sessionData.keyNamePairs,
-            }
+            currentList: this.state.currentList,
         }), () => {
-            // AN AFTER EFFECT IS THAT WE NEED TO MAKE SURE
-            // THE LIST GETS UPDATED AND SAVED
-            this.db.mutationUpdateList(itemList);
-            // this.db.mutationUpdateSessionData(this.state.sessionData);
-            // TODO: UNDO/REDO
+            // AFTER EFFECTS?
+            this.db.mutationUpdateList(this.state.currentList);
+            // console.log(this.state.currentList.items);
         });
     }
     // THIS FUNCTION BEGINS THE PROCESS OF LOADING A LIST FOR EDITING
@@ -269,26 +281,37 @@ class App extends React.Component {
     addMoveItemTransaction = (oldIndex, newIndex) => {
         let transaction = new MoveItem_Transaction(this, oldIndex, newIndex);
         this.tps.addTransaction(transaction);
+        console.log(this.tps.toString());
+        this.updateToolbarButtons();
     }
     moveItem = (oldIndex, newIndex) => { // FOR DRAG AND DROP
-        console.log(this.state);
+        // console.log(this.state);
         let prevData = this.state.currentList.items.splice(oldIndex, 1);
         this.state.currentList.items.splice(newIndex, 0, prevData[0]);
 
-        // UPDATE DB
-        this.db.mutationUpdateList(this.state.currentList);
+        this.setState(prevState => ({
+            currentList: this.state.currentList,
+        }), () => {
+            // AFTER EFFECTS? UPDATE DB
+            this.db.mutationUpdateList(this.state.currentList);
+            // console.log(this.state.currentList.items);
+        });
         // this.db.mutationUpdateSessionData(this.state.sessionData);
     }
     undo = () => {
         if (this.tps.hasTransactionToUndo()) {
             this.tps.undoTransaction();
             this.updateToolbarButtons();
+            // UPDATE DB
+            this.db.mutationUpdateList(this.state.currentList);
         }
     }
     redo = () => {
         if (this.tps.hasTransactionToRedo()) {
-            this.tps.redoTransaction();
+            this.tps.doTransaction();
             this.updateToolbarButtons();
+            // UPDATE DB
+            this.db.mutationUpdateList(this.state.currentList);
         }
     }
     // THIS FUNCTION IS FOR HIDING THE MODAL
@@ -333,6 +356,8 @@ class App extends React.Component {
                     currentList={this.state.currentList} 
                     renameItemCallback={this.renameItem}
                     moveItemCallback={this.moveItem}
+                    addMoveItemTransactionCallback={this.addMoveItemTransaction}
+                    addChangeItemTransactionCallback={this.addChangeItemTransaction}
                     />
                 <Statusbar 
                     currentList={this.state.currentList} />
