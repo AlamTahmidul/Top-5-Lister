@@ -75,10 +75,10 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 - [X] Editable Items - one should be able to change the text for any item via a text field by double clicking on the item. One can then click away or press Enter to finalize that change.
 - [X] Item Drag and Drop - the items should be rearrangeable via dragging, just as in HW 1.
 - [X] Drag Guidance - when dragging an item, the container into which the dragged item is above should be green to denote that you can place it there. Note, only one container can be such and if we are not dragging over a container, no items should be green.
-- [X]List Deletion - should the user press one of the delete buttons on a list card a modal opens up prompting the user if they wish to delete the list. Change it so that when the user presses Confirm the modal closes and the list is permanently deleted. Note, you need to make sure that the lists are always listed in alphabetical order by name.
+- [X] List Deletion - should the user press one of the delete buttons on a list card a modal opens up prompting the user if they wish to delete the list. Change it so that when the user presses Confirm the modal closes and the list is permanently deleted. Note, you need to make sure that the lists are always listed in alphabetical order by name.
 - [X] Delete Modal List Name - currently, when the delete list modal opens it only says Delete the Top 5 List?, change this so that it includes the name of the list that the user has asked to delete, so for example the modal might prompt Delete the Top 5 Games List?.
 - [X] Undo/Redo - Undo/Redo should also work using Control-Z and Control-Y.
 - [X] Closing a List - pressing the close list button will simply close the list currently being edited.
 - [X] List Saving - after every single edit, data should be saved to local storage. Remember to also save session data when necessary, like when a list is deleted.
-- [ ] Foolproof Design - make sure the undo, redo, and close buttons are only enabled when they are usable. When disabled, they should look faded (use transparency) and should not be clickable.
+- [X] Foolproof Design - make sure the undo, redo, and close buttons are only enabled when they are usable. When disabled, they should look faded (use transparency) and should not be clickable.
 - [X] Version Control - make sure you use Git for the full duration of the project. Make commits at least for each completed task. You should be ready to show the TA a commit for each task you wish to receive points for.
