@@ -88,6 +88,10 @@ class App extends React.Component {
             document.getElementById("close-button").classList.remove("top5-button-disabled");
             document.getElementById("close-button").classList.add("top5-button");
             document.getElementById("close-button").removeAttribute("disabled");
+
+            document.getElementById("add-list-button").classList.remove("top5-button");
+            document.getElementById("add-list-button").classList.add("top5-button-disabled");
+            document.getElementById("add-list-button").setAttribute("disabled", "true");
         });
     }
     renameList = (key, newName) => { // TODO: CLEAR TRANSACTION STACK
@@ -189,7 +193,6 @@ class App extends React.Component {
             sessionData: this.state["sessionData"]
         }), () => {
             // ANY AFTER EFFECTS?
-            // TODO: Clear Transaction Stack, Make ADD LIST functional, Grey-out Undo/Redo and Close
             console.log("CLOSED LIST?!");
             document.getElementById("close-button").classList.remove("top5-button");
             document.getElementById("close-button").classList.add("top5-button-disabled");
@@ -212,30 +215,50 @@ class App extends React.Component {
         // keyNamePair holds the proper id and name of list to delete
     }
     confirmDeleteList = () => {
-        // TODO: DELETE FROM LOCAL STORAGE
         // console.log(this.state["sessionData"]);
 
         let keyNamePair = this.removeList;
-        console.log("REMOVING " + keyNamePair.name + " with id: " + keyNamePair.id);
+        console.log("REMOVING " + keyNamePair.name + " with id: " + keyNamePair.key);
         
-        this.db.mutationDeleteList(this.state["sessionData"], keyNamePair);
-        let newSession = this.db.queryGetSessionData();
-
-        this.setState(() => ({
-            currentList: null,
+        if (this.state.currentList != null && this.state.currentList.key != keyNamePair.key) // If CurrentList is not being deleted
+        {
+            this.db.mutationDeleteList(this.state["sessionData"], keyNamePair);
+            let newSession = this.db.queryGetSessionData();
+            this.setState(() => ({
             sessionData: {
                 nextKey: newSession.nextKey,
                 counter: newSession.counter,
                 keyNamePairs: newSession.keyNamePairs
             }
-        }), () => {
+            }), () => {
             // UPDATING LIST IN PERMANENT STORAGE
             // IS AN AFTER EFFECT
             // TODO: CLEAR TRANSACTION STACK
             console.log("Confirm DeleteList? " + this.state["sessionData"]);
             
             this.hideDeleteListModal(); // CLOSE THE MODAL
-        });
+            });
+        } else {
+            console.log("THIS LIST IS CURRENTLY OPEN!")
+            this.db.mutationDeleteList(this.state["sessionData"], keyNamePair);
+            let newSession = this.db.queryGetSessionData();
+            this.setState(() => ({
+                currentList: null,
+                sessionData: {
+                    nextKey: newSession.nextKey,
+                    counter: newSession.counter,
+                    keyNamePairs: newSession.keyNamePairs
+                }
+                }), () => {
+                    // UPDATING LIST IN PERMANENT STORAGE
+                    // IS AN AFTER EFFECT
+                    console.log("Confirm DeleteList? " + this.state["sessionData"]);
+                    
+                    this.clearTransactions();
+                    this.closeCurrentList();
+                    this.hideDeleteListModal(); // CLOSE THE MODAL
+                });
+        }
     }
     // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
     // TO SEE IF THEY REALLY WANT TO DELETE THE LIST
@@ -274,9 +297,12 @@ class App extends React.Component {
     addChangeItemTransaction = (id, newText) => {
         // GET CURRENT TEXT
         let oldText = this.state.currentList.items[id];
-        let transaction = new ChangeItem_Transaction(this, id, oldText, newText);
-        this.tps.addTransaction(transaction);
-        this.updateToolbarButtons();
+        if (oldText !== newText)
+        {
+            let transaction = new ChangeItem_Transaction(this, id, oldText, newText);
+            this.tps.addTransaction(transaction);
+            this.updateToolbarButtons();
+        }
     }
     addMoveItemTransaction = (oldIndex, newIndex) => {
         let transaction = new MoveItem_Transaction(this, oldIndex, newIndex);
