@@ -2,6 +2,7 @@ import { createContext, useState } from 'react'
 import jsTPS from '../common/jsTPS'
 import api from '../api'
 import MoveItem_Transaction from '../transactions/MoveItem_Transaction'
+import UpdateItem_Transaction from '../transactions/UpdateItem_Transaction'
 export const GlobalStoreContext = createContext({});
 /*
     This is our global data store. Note that it uses the Flux design pattern,
@@ -17,7 +18,9 @@ export const GlobalStoreActionType = {
     CLOSE_CURRENT_LIST: "CLOSE_CURRENT_LIST",
     LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
-    SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE"
+    SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
+    SET_ITEM_EDIT_ACTIVE: "SET_ITEM_EDIT_ACTIVE",
+    DEL_LIST: "DEL_LIST"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -48,7 +51,7 @@ export const useGlobalStore = () => {
                     currentList: payload.top5List,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
-                    isItemEditActive: false,
+                    isItemEditActive: null,
                     listMarkedForDeletion: null
                 });
             }
@@ -59,7 +62,7 @@ export const useGlobalStore = () => {
                     currentList: null,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
-                    isItemEditActive: false,
+                    isItemEditActive: null,
                     listMarkedForDeletion: null
                 })
             }
@@ -70,7 +73,7 @@ export const useGlobalStore = () => {
                     currentList: null,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
-                    isItemEditActive: false,
+                    isItemEditActive: null,
                     listMarkedForDeletion: null
                 });
             }
@@ -81,7 +84,7 @@ export const useGlobalStore = () => {
                     currentList: payload,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
-                    isItemEditActive: false,
+                    isItemEditActive: null,
                     listMarkedForDeletion: null
                 });
             }
@@ -92,8 +95,30 @@ export const useGlobalStore = () => {
                     currentList: payload,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: true,
-                    isItemEditActive: false,
+                    isItemEditActive: null,
                     listMarkedForDeletion: null
+                });
+            }
+            // START EDITING AN ITEM
+            case GlobalStoreActionType.SET_ITEM_EDIT_ACTIVE: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    newListCounter: store.newListCounter,
+                    isListNameEditActive: false,
+                    isItemEditActive: payload,
+                    listMarkedForDeletion: null
+                });
+            }
+            // DELETE LIST
+            case GlobalStoreActionType.DEL_LIST: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    newListCounter: store.newListCounter,
+                    isListNameEditActive: false,
+                    isItemEditActive: null,
+                    listMarkedForDeletion: payload
                 });
             }
             default:
@@ -189,6 +214,11 @@ export const useGlobalStore = () => {
         let transaction = new MoveItem_Transaction(store, start, end);
         tps.addTransaction(transaction);
     }
+    store.addUpdateItemTransaction = function (index, newText) {
+        let oldText = store.currentList.items[index - 1];
+        let transaction = new UpdateItem_Transaction(store, index, oldText, newText);
+        tps.addTransaction(transaction);
+    }
     store.moveItem = function (start, end) {
         start -= 1;
         end -= 1;
@@ -208,6 +238,12 @@ export const useGlobalStore = () => {
         }
 
         // NOW MAKE IT OFFICIAL
+        store.updateCurrentList();
+    }
+    store.updateItem = function (index, text) {
+        store.currentList.items[index - 1] = text;
+
+        // UPDATE LIST
         store.updateCurrentList();
     }
     store.updateCurrentList = function() {
@@ -234,6 +270,14 @@ export const useGlobalStore = () => {
         storeReducer({
             type: GlobalStoreActionType.SET_LIST_NAME_EDIT_ACTIVE,
             payload: null
+        });
+    }
+
+    // THIS FUNCTIONS ENABLES THE PROCESS OF EDITING ITEMS
+    store.setIsItemEditActive = function (itemNum) {
+        storeReducer({
+            type: GlobalStoreActionType.SET_ITEM_EDIT_ACTIVE,
+            payload: itemNum
         });
     }
 
