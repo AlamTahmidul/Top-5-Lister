@@ -47,6 +47,12 @@ function ListCard(props) {
         }
     }
 
+    function handleBlur(event) {
+        let id = event.target.id.substring("list-".length);
+        store.changeListName(id, text);
+        toggleEdit();
+    }
+
     function handleUpdateText(event) {
         setText(event.target.value );
     }
@@ -96,6 +102,7 @@ function ListCard(props) {
                 type='text'
                 onKeyPress={handleKeyPress}
                 onChange={handleUpdateText}
+                onBlur={handleBlur}
                 defaultValue={idNamePair.name}
             />;
     }

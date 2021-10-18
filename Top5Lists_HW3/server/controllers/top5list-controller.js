@@ -41,7 +41,7 @@ createTop5List = (req, res) => {
 }
 updateTop5List = async (req, res) => {
     const body = req.body
-console.log("updateTop5List: " + JSON.stringify(body));
+    console.log("updateTop5List: " + JSON.stringify(body));
     if (!body) {
         return res.status(400).json({
             success: false,
@@ -77,8 +77,9 @@ console.log("updateTop5List: " + JSON.stringify(body));
             })
     })
 }
-deleteTop5List = async (req, res) => {
-    await Top5List.findOneAndDelete({ _id: req.params.id }, (err, top5List) => {
+deleteTop5List = async (req, res) => { // index.d.ts: Creates a `findOneAndDelete` query: atomically finds the given document, deletes it, and returns the document as it was before deletion.
+    await Top5List.findOneAndDelete({ "_id": req.params.id }).exec().then( (err, top5List) => {
+        console.log(err);
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }

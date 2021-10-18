@@ -51,7 +51,7 @@ export const useGlobalStore = () => {
                     currentList: payload.top5List,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
-                    isItemEditActive: null,
+                    isItemEditActive: false,
                     listMarkedForDeletion: null
                 });
             }
@@ -62,7 +62,7 @@ export const useGlobalStore = () => {
                     currentList: null,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
-                    isItemEditActive: null,
+                    isItemEditActive: false,
                     listMarkedForDeletion: null
                 })
             }
@@ -73,7 +73,7 @@ export const useGlobalStore = () => {
                     currentList: null,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
-                    isItemEditActive: null,
+                    isItemEditActive: false,
                     listMarkedForDeletion: null
                 });
             }
@@ -84,7 +84,7 @@ export const useGlobalStore = () => {
                     currentList: payload,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
-                    isItemEditActive: null,
+                    isItemEditActive: false,
                     listMarkedForDeletion: null
                 });
             }
@@ -95,7 +95,7 @@ export const useGlobalStore = () => {
                     currentList: payload,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: true,
-                    isItemEditActive: null,
+                    isItemEditActive: false,
                     listMarkedForDeletion: null
                 });
             }
@@ -117,7 +117,7 @@ export const useGlobalStore = () => {
                     currentList: store.currentList,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
-                    isItemEditActive: null,
+                    isItemEditActive: false,
                     listMarkedForDeletion: payload
                 });
             }
@@ -144,6 +144,7 @@ export const useGlobalStore = () => {
                             response = await api.getTop5ListPairs();
                             if (response.data.success) {
                                 let pairsArray = response.data.idNamePairs;
+                                // console.log(pairsArray);
                                 storeReducer({
                                     type: GlobalStoreActionType.CHANGE_LIST_NAME,
                                     payload: {
@@ -216,6 +217,8 @@ export const useGlobalStore = () => {
     }
     store.addUpdateItemTransaction = function (index, newText) {
         let oldText = store.currentList.items[index - 1];
+        console.log("OLD TEXT: " + oldText);
+        console.log("NEW TEXT: " + newText);
         let transaction = new UpdateItem_Transaction(store, index, oldText, newText);
         tps.addTransaction(transaction);
     }
@@ -259,10 +262,16 @@ export const useGlobalStore = () => {
         asyncUpdateCurrentList();
     }
     store.undo = function () {
-        tps.undoTransaction();
+        if (tps.hasTransactionToUndo())
+        {
+            tps.undoTransaction();
+        }
     }
     store.redo = function () {
-        tps.doTransaction();
+        if (tps.hasTransactionToRedo())
+        {
+            tps.doTransaction();
+        }
     }
 
     // THIS FUNCTION ENABLES THE PROCESS OF EDITING A LIST NAME
@@ -274,10 +283,10 @@ export const useGlobalStore = () => {
     }
 
     // THIS FUNCTIONS ENABLES THE PROCESS OF EDITING ITEMS
-    store.setIsItemEditActive = function (itemNum) {
+    store.setIsItemEditActive = function (item) {
         storeReducer({
             type: GlobalStoreActionType.SET_ITEM_EDIT_ACTIVE,
-            payload: itemNum
+            payload: item
         });
     }
 
