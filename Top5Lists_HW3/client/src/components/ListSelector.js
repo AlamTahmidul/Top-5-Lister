@@ -10,11 +10,16 @@ import DeleteModal from './DeleteModal'
 */
 const ListSelector = () => {
     const { store } = useContext(GlobalStoreContext);
-    store.history = useHistory();
+    // store.history = useHistory();
 
     useEffect(() => {
         store.loadIdNamePairs();
     }, []);
+
+    function handleClick(event) {
+        console.log("Adding a list...");
+        store.newList();
+    }
 
     let listCard = "";
     if (store) {
@@ -33,6 +38,7 @@ const ListSelector = () => {
                     type="button"
                     id="add-list-button"
                     className="top5-button"
+                    onClick={handleClick}
                     value="+" />
                 Your Lists
             </div>

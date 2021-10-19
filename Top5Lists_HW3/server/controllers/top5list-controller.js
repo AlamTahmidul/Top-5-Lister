@@ -78,8 +78,8 @@ updateTop5List = async (req, res) => {
     })
 }
 deleteTop5List = async (req, res) => { // index.d.ts: Creates a `findOneAndDelete` query: atomically finds the given document, deletes it, and returns the document as it was before deletion.
-    await Top5List.findOneAndDelete({ "_id": req.params.id }).exec().then( (err, top5List) => {
-        console.log(err);
+    await Top5List.findOneAndDelete({ "_id": req.params.id }).exec().then( (top5List, err) => {
+        // console.log(err);
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }

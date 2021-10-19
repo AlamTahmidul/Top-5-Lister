@@ -29,24 +29,24 @@ function EditToolbar() {
     return (
         <div id="edit-toolbar">
             <div
-                disabled={editStatus}
+                disabled={editStatus || store.canUndo()}
                 id='undo-button'
                 onClick={handleUndo}
-                className={enabledButtonClass}>
+                className={store.canUndo() ? enabledButtonClass : "top5-button-disabled"}>
                 &#x21B6;
             </div>
             <div
-                disabled={editStatus}
+                disabled={editStatus || store.canRedo()}
                 id='redo-button'
                 onClick={handleRedo}
-                className={enabledButtonClass}>
+                className={store.canRedo() ? enabledButtonClass : "top5-button-disabled"}>
                 &#x21B7;
             </div>
             <div
                 disabled={editStatus}
                 id='close-button'
                 onClick={handleClose}
-                className={enabledButtonClass}>
+                className={store.currentList != null ? enabledButtonClass : "top5-button-disabled"}>
                 &#x24E7;
             </div>
         </div>

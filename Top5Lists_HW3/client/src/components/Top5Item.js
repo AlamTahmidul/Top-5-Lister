@@ -50,7 +50,7 @@ function Top5Item(props) {
     }
 
     function toggleEdit() {
-        console.log("EDIT!");
+        // console.log("EDIT!");
 
         let newActive = !editActive;
         if (newActive) {
@@ -62,7 +62,7 @@ function Top5Item(props) {
     function handleKeyPress(event) {
         if (event.code === "Enter") {
             let id = event.target.id.substring("list-".length);
-            console.log(id);
+            // console.log(id);
             store.addUpdateItemTransaction(id, text);
             toggleEdit();
         }
@@ -70,11 +70,11 @@ function Top5Item(props) {
 
     function handleUpdateText(event) {
         setText(event.target.value);
-        console.log("NEW TEXT: " + event.target.value);
+        // console.log("NEW TEXT: " + event.target.value);
     }
 
     function handleBlur(event) {
-        console.log("BLUR in Top5Item.js");
+        // console.log("BLUR in Top5Item.js");
         let id = event.target.id.substring("list-".length);
         store.addUpdateItemTransaction(id, text);
         toggleEdit();
@@ -110,7 +110,7 @@ function Top5Item(props) {
                 value={"\u270E"}
                 onClick={handleToggleEdit}
             />
-        {props.text}
+            {props.text}
         </div>;
 
     if (editActive) {

@@ -114,7 +114,7 @@ export const useGlobalStore = () => {
             case GlobalStoreActionType.DEL_LIST: {
                 return setStore({
                     idNamePairs: store.idNamePairs,
-                    currentList: store.currentList,
+                    currentList: null,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
@@ -163,8 +163,35 @@ export const useGlobalStore = () => {
         asyncChangeListName(id);
     }
 
+    // THIS FUNCTION CREATES A NEW LIST
+    store.newList = function () {
+        let content = {
+            "name": "Untitled",
+            "items": [
+                "Item 1",
+                "Item 2",
+                "Item 3",
+                "Item 4",
+                "Item 5"
+            ]
+        }
+        
+        async function addNewList(content) {
+            let response = await api.createTop5List(content);
+            if (response.data.success) {
+                let top5List = response.data.top5List; // SAVES Top5List
+                // console.log(top5List);
+                store.loadIdNamePairs(); // Load all the IDs
+            }
+        }
+        addNewList(content);
+        // NOW REFRESH
+
+    }
+
     // THIS FUNCTION PROCESSES CLOSING THE CURRENTLY LOADED LIST
     store.closeCurrentList = function () {
+        tps.clearAllTransactions();
         storeReducer({
             type: GlobalStoreActionType.CLOSE_CURRENT_LIST,
             payload: {}
@@ -206,6 +233,7 @@ export const useGlobalStore = () => {
                         payload: top5List
                     });
                     store.history.push("/top5list/" + top5List._id);
+                    tps.clearAllTransactions();
                 }
             }
         }
@@ -219,8 +247,11 @@ export const useGlobalStore = () => {
         let oldText = store.currentList.items[index - 1];
         console.log("OLD TEXT: " + oldText);
         console.log("NEW TEXT: " + newText);
-        let transaction = new UpdateItem_Transaction(store, index, oldText, newText);
-        tps.addTransaction(transaction);
+        if (oldText !== newText)
+        {
+            let transaction = new UpdateItem_Transaction(store, index, oldText, newText);
+            tps.addTransaction(transaction);
+        }
     }
     store.moveItem = function (start, end) {
         start -= 1;
@@ -273,7 +304,52 @@ export const useGlobalStore = () => {
             tps.doTransaction();
         }
     }
+    store.canUndo = function () {
+        return tps.hasTransactionToUndo();
+    }
+    store.canRedo = function () {
+        return tps.hasTransactionToRedo();
+    }
+    // TODO: CONFIRMED DELETE!
+    store.deleteMarkedList = function () {
+        
+        async function deleteList() {
+            let deleteId = store.listMarkedForDeletion._id;
+            let response = await api.deleteTop5ListById(deleteId);
+            if (response.data.success) {
+                store.loadIdNamePairs();
+            }
+        }
+        deleteList().then((err) => {
+            // HIDE MODAL
+            store.hideDeleteListModal();
+        });
+    }
+    // SHOW MODAL
+    store.showModal = function (listId) {
+        // FIRST, UPDATE listMarkedForDeletion
+        async function asyncLoadIdNamePairs(lId) {
+            const response = await api.getTop5ListById(lId);
+            if (response.data.success) {
+                let top5List = response.data.top5List;
 
+                storeReducer({
+                    type: GlobalStoreActionType.DEL_LIST,
+                    payload: top5List
+                });
+            }
+        }
+        asyncLoadIdNamePairs(listId).then((err) => {
+            // // NOW, SHOW THE MODAL
+            let modal = document.getElementById("delete-modal");
+            modal.classList.add("is-visible");
+        });
+    }
+    // HIDE MODAL
+    store.hideDeleteListModal = function () {
+        let modal = document.getElementById("delete-modal");
+        modal.classList.remove("is-visible");
+    }
     // THIS FUNCTION ENABLES THE PROCESS OF EDITING A LIST NAME
     store.setIsListNameEditActive = function () {
         storeReducer({
@@ -289,7 +365,13 @@ export const useGlobalStore = () => {
             payload: item
         });
     }
-
+    // THIS FUNCTIONS ENABLES THE PROCESS OF DELETING A LIST
+    store.setListMarkedForDeletion = function (list) {
+        storeReducer({
+            type: GlobalStoreActionType.DEL_LIST,
+            payload: list
+        });
+    }
     // THIS GIVES OUR STORE AND ITS REDUCER TO ANY COMPONENT THAT NEEDS IT
     return { store, storeReducer };
 }

@@ -28,6 +28,7 @@ function ListCard(props) {
 
     function handleToggleEdit(event) {
         event.stopPropagation();
+        setText(idNamePair.name)
         toggleEdit();
     }
 
@@ -57,6 +58,14 @@ function ListCard(props) {
         setText(event.target.value );
     }
 
+    function handleDeleteList(event) {
+        event.stopPropagation();
+        let id = event.target.id;
+        let l = "delete-list-".length;
+        id = id.substring(l);
+        store.showModal(id);
+    }
+
     let selectClass = "unselected-list-card";
     if (selected) {
         selectClass = "selected-list-card";
@@ -82,6 +91,7 @@ function ListCard(props) {
                 type="button"
                 id={"delete-list-" + idNamePair._id}
                 className="list-card-button"
+                onClick={handleDeleteList}
                 value={"\u2715"}
             />
             <input
