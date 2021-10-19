@@ -140,21 +140,24 @@ export const useGlobalStore = () => {
                 async function updateList(top5List) {
                     response = await api.updateTop5ListById(top5List._id, top5List);
                     if (response.data.success) {
-                        async function getListPairs(top5List) {
-                            response = await api.getTop5ListPairs();
-                            if (response.data.success) {
-                                let pairsArray = response.data.idNamePairs;
-                                // console.log(pairsArray);
-                                storeReducer({
-                                    type: GlobalStoreActionType.CHANGE_LIST_NAME,
-                                    payload: {
-                                        idNamePairs: pairsArray,
-                                        top5List: top5List
-                                    }
-                                });
-                            }
-                        }
-                        getListPairs(top5List);
+                        // async function getListPairs(top5List) {
+                        //     response = await api.getTop5ListPairs();
+                        //     if (response.data.success) {
+                        //         let pairsArray = response.data.idNamePairs;
+                        //         pairsArray.sort((keyPair1, keyPair2) => {
+                        //             return keyPair1.name.localeCompare(keyPair2.name);
+                        //         });
+                        //         storeReducer({
+                        //             type: GlobalStoreActionType.CHANGE_LIST_NAME,
+                        //             payload: {
+                        //                 idNamePairs: pairsArray,
+                        //                 top5List: top5List
+                        //             }
+                        //         });
+                        //     }
+                        // }
+                        // getListPairs(top5List);
+                        store.loadIdNamePairs();
                     }
                 }
                 updateList(top5List);
@@ -204,6 +207,13 @@ export const useGlobalStore = () => {
             const response = await api.getTop5ListPairs();
             if (response.data.success) {
                 let pairsArray = response.data.idNamePairs;
+
+                // TODO: SORT BY NAME!!!
+                pairsArray.sort((keyPair1, keyPair2) => {
+                    return keyPair1.name.localeCompare(keyPair2.name);
+                });
+                // console.log(pairsArray);
+
                 storeReducer({
                     type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
                     payload: pairsArray
@@ -357,7 +367,6 @@ export const useGlobalStore = () => {
             payload: null
         });
     }
-
     // THIS FUNCTIONS ENABLES THE PROCESS OF EDITING ITEMS
     store.setIsItemEditActive = function (item) {
         storeReducer({
