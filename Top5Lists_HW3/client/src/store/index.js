@@ -209,7 +209,7 @@ export const useGlobalStore = () => {
             if (response.data.success) {
                 let pairsArray = response.data.idNamePairs;
 
-                // TODO: SORT BY NAME!!!
+                // SORT BY NAME!!!
                 pairsArray.sort((keyPair1, keyPair2) => {
                     return keyPair1.name.localeCompare(keyPair2.name);
                 });
@@ -224,7 +224,17 @@ export const useGlobalStore = () => {
                 console.log("API FAILED TO GET THE LIST PAIRS");
             }
         }
-        asyncLoadIdNamePairs();
+        asyncLoadIdNamePairs().catch((err) => { // If there are no pairs!!!
+            console.log(err);
+            setStore({
+                idNamePairs: [],
+                currentList: null,
+                newListCounter: store.newListCounter,
+                listNameActive: false,
+                itemActive: false,
+                listMarkedForDeletion: null
+            });
+        });
     }
 
     // THE FOLLOWING 8 FUNCTIONS ARE FOR COORDINATING THE UPDATING
