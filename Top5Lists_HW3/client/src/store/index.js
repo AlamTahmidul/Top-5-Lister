@@ -169,7 +169,7 @@ export const useGlobalStore = () => {
     // THIS FUNCTION CREATES A NEW LIST
     store.newList = function () {
         let content = {
-            "name": "Untitled",
+            "name": "Untitled" + (store.newListCounter + 1),
             "items": [
                 "Item 1",
                 "Item 2",
@@ -182,9 +182,10 @@ export const useGlobalStore = () => {
         async function addNewList(content) {
             let response = await api.createTop5List(content);
             if (response.data.success) {
-                let top5List = response.data.top5List; // SAVES Top5List
+                // let top5List = response.data.top5List; // SAVES Top5List
                 // console.log(top5List);
                 store.loadIdNamePairs(); // Load all the IDs
+                store.newListCounter++;
             }
         }
         addNewList(content);
@@ -250,15 +251,19 @@ export const useGlobalStore = () => {
         asyncSetCurrentList(id);
     }
     store.addMoveItemTransaction = function (start, end) {
-        let transaction = new MoveItem_Transaction(store, start, end);
-        tps.addTransaction(transaction);
+        if (start !== end)
+        {
+            let transaction = new MoveItem_Transaction(store, start, end);
+            tps.addTransaction(transaction);
+        }
     }
     store.addUpdateItemTransaction = function (index, newText) {
         let oldText = store.currentList.items[index - 1];
-        console.log("OLD TEXT: " + oldText);
-        console.log("NEW TEXT: " + newText);
+        // console.log("OLD TEXT: " + oldText);
+        // console.log("NEW TEXT: " + newText);
         if (oldText !== newText)
         {
+            console.log("ADD TO TRANSCTION: " + oldText + "-> " + newText + " /at index " + index);
             let transaction = new UpdateItem_Transaction(store, index, oldText, newText);
             tps.addTransaction(transaction);
         }

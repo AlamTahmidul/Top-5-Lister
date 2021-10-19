@@ -10,7 +10,7 @@ import DeleteModal from './DeleteModal'
 */
 const ListSelector = () => {
     const { store } = useContext(GlobalStoreContext);
-    // store.history = useHistory();
+    store.history = useHistory();
 
     useEffect(() => {
         store.loadIdNamePairs();

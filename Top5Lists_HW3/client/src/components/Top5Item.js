@@ -10,7 +10,6 @@ function Top5Item(props) {
     const { store } = useContext(GlobalStoreContext);
     const [draggedTo, setDraggedTo] = useState(false);
     const [ editActive, setEditActive ] = useState(false);
-    const [ text, setText ] = useState("");
 
     function handleDragStart(event) {
         event.dataTransfer.setData("item", event.target.id);
@@ -46,38 +45,33 @@ function Top5Item(props) {
     // HANDLE EDIT-ITEM
     function handleToggleEdit(event) {
         event.stopPropagation();
-        toggleEdit();
+        toggleEdit(event, true);
     }
 
-    function toggleEdit() {
-        // console.log("EDIT!");
-
+    function toggleEdit(event, b) {
         let newActive = !editActive;
         if (newActive) {
-            store.setIsItemEditActive();
+            store.setIsItemEditActive(event.target.id.substring("list-".length));
+        }
+        if (!b) {
+            store.setIsItemEditActive(false);
         }
         setEditActive(newActive);
     }
 
     function handleKeyPress(event) {
         if (event.code === "Enter") {
-            let id = event.target.id.substring("list-".length);
-            // console.log(id);
-            store.addUpdateItemTransaction(id, text);
-            toggleEdit();
+            handleBlur(event);
         }
-    }
-
-    function handleUpdateText(event) {
-        setText(event.target.value);
-        // console.log("NEW TEXT: " + event.target.value);
     }
 
     function handleBlur(event) {
         // console.log("BLUR in Top5Item.js");
         let id = event.target.id.substring("list-".length);
-        store.addUpdateItemTransaction(id, text);
-        toggleEdit();
+        let txt = event.target.value;
+        // console.log(id);
+        store.addUpdateItemTransaction(id, txt);
+        toggleEdit(event, false);
     }
 
     let { index } = props;
@@ -89,7 +83,6 @@ function Top5Item(props) {
     if (store.isItemEditActive) {
         cardStatus = true;
     }
-
     let listElements = 
         <div
         disabled={cardStatus}
@@ -100,13 +93,13 @@ function Top5Item(props) {
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        draggable="true"
+        draggable={!store.isItemEditActive}
         >
             <input
                 disabled={cardStatus}
                 type="button"
                 id={"edit-item-" + (index + 1)}
-                className="list-card-button"
+                className=".top5-button"
                 value={"\u270E"}
                 onClick={handleToggleEdit}
             />
@@ -117,10 +110,9 @@ function Top5Item(props) {
         listElements = 
             <input
                 id={'item-' + (index + 1)}
-                className="list-card"
+                className="top5-item"
                 type="text"
                 onKeyPress={handleKeyPress}
-                onChange={handleUpdateText}
                 onBlur={handleBlur}
                 defaultValue={props.text}
             />;
