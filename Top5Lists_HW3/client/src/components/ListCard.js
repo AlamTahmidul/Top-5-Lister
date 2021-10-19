@@ -16,7 +16,8 @@ function ListCard(props) {
     const { idNamePair, selected } = props;
 
     function handleLoadList(event) {
-        if (!event.target.disabled) {
+        event.stopPropagation();
+        if (!event.target.disabled && event.detail === 1 && (!store.isListNameEditActive)) {
             let _id = event.target.id;
             if (_id.indexOf('list-card-text-') >= 0)
                 _id = ("" + _id).substring("list-card-text-".length);
@@ -29,29 +30,33 @@ function ListCard(props) {
     function handleToggleEdit(event) {
         event.stopPropagation();
         setText(idNamePair.name)
-        toggleEdit();
+        toggleEdit(true);
     }
 
-    function toggleEdit() {
+    function toggleEdit(b) {
         let newActive = !editActive;
         if (newActive) {
-            store.setIsListNameEditActive();
+            store.setIsListNameEditActive(true);
+        }
+        if (!b) {
+            store.setIsListNameEditActive(false);
         }
         setEditActive(newActive);
     }
 
     function handleKeyPress(event) {
         if (event.code === "Enter") {
-            let id = event.target.id.substring("list-".length);
-            store.changeListName(id, text);
-            toggleEdit();
+            // let id = event.target.id.substring("list-".length);
+            // store.changeListName(id, text);
+            // toggleEdit(false);
+            handleBlur(event);
         }
     }
 
     function handleBlur(event) {
         let id = event.target.id.substring("list-".length);
         store.changeListName(id, text);
-        toggleEdit();
+        toggleEdit(false);
     }
 
     function handleUpdateText(event) {
@@ -76,6 +81,7 @@ function ListCard(props) {
     }
     let cardElement =
         <div
+            disabled={store.isListNameEditActive || store.isItemEditActive}
             id={idNamePair._id}
             key={idNamePair._id}
             onClick={handleLoadList}
@@ -112,7 +118,6 @@ function ListCard(props) {
                 type='text'
                 onKeyPress={handleKeyPress}
                 onChange={handleUpdateText}
-                onBlur={handleBlur}
                 defaultValue={idNamePair.name}
             />;
     }

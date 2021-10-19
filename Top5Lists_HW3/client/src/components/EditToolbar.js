@@ -39,21 +39,21 @@ function EditToolbar() {
     return (
         <div id="edit-toolbar">
             <div
-                disabled={editStatus}
+                disabled={store.isListNameEditActive || store.isItemEditActive}
                 id='undo-button'
                 onClick={handleUndo}
-                className={store.canUndo() && !editStatus ? enabledButtonClass : "top5-button-disabled"}>
+                className={store.canUndo() && (!editStatus) ? enabledButtonClass : "top5-button-disabled"}>
                 &#x21B6;
             </div>
             <div
-                disabled={editStatus}
+                disabled={store.isListNameEditActive || store.isItemEditActive}
                 id='redo-button'
                 onClick={handleRedo}
                 className={store.canRedo() && !editStatus ? enabledButtonClass : "top5-button-disabled"}>
                 &#x21B7;
             </div>
             <div
-                disabled={editStatus}
+                disabled={store.isListNameEditActive || store.isItemEditActive}
                 id='close-button'
                 onClick={handleClose}
                 className={store.currentList != null && !editStatus ? enabledButtonClass : "top5-button-disabled"}>

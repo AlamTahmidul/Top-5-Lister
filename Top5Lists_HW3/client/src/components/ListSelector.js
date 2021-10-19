@@ -17,8 +17,11 @@ const ListSelector = () => {
     }, []);
 
     function handleClick(event) {
-        console.log("Adding a list...");
-        store.newList();
+        if (!store.isListNameEditActive && !store.isItemEditActive && event.detail === 1)
+        {
+            console.log("Adding a list...");
+            store.newList(); // MADE A LIST
+        }
     }
 
     let listCard = "";
@@ -35,9 +38,10 @@ const ListSelector = () => {
         <div id="top5-list-selector">
             <div id="list-selector-heading">
                 <input
+                    disabled={store.isListNameEditActive || store.isItemEditActive}
                     type="button"
                     id="add-list-button"
-                    className="top5-button"
+                    className={store.isListNameEditActive || store.isItemEditActive ? "top5-button-disabled" : "top5-button"}
                     onClick={handleClick}
                     value="+" />
                 Your Lists

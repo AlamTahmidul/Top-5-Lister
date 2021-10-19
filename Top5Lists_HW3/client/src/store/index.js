@@ -34,7 +34,7 @@ export const useGlobalStore = () => {
         idNamePairs: [],
         currentList: null,
         newListCounter: 0,
-        listNameActive: false,
+        isListNameEditActive: false,
         itemActive: false,
         listMarkedForDeletion: null
     });
@@ -92,9 +92,9 @@ export const useGlobalStore = () => {
             case GlobalStoreActionType.SET_LIST_NAME_EDIT_ACTIVE: {
                 return setStore({
                     idNamePairs: store.idNamePairs,
-                    currentList: payload,
+                    currentList: null,
                     newListCounter: store.newListCounter,
-                    isListNameEditActive: true,
+                    isListNameEditActive: payload,
                     isItemEditActive: false,
                     listMarkedForDeletion: null
                 });
@@ -182,14 +182,16 @@ export const useGlobalStore = () => {
         async function addNewList(content) {
             let response = await api.createTop5List(content);
             if (response.data.success) {
-                // let top5List = response.data.top5List; // SAVES Top5List
+                let top5List = response.data.top5List; // SAVES Top5List
+                // console.log("ADDED!");
                 // console.log(top5List);
+                // NOW REFRESH
                 store.loadIdNamePairs(); // Load all the IDs
                 store.newListCounter++;
+                store.setCurrentList(top5List._id);
             }
         }
         addNewList(content);
-        // NOW REFRESH
 
     }
 
@@ -379,7 +381,7 @@ export const useGlobalStore = () => {
     store.setIsListNameEditActive = function () {
         storeReducer({
             type: GlobalStoreActionType.SET_LIST_NAME_EDIT_ACTIVE,
-            payload: null
+            payload: !store.isListNameEditActive
         });
     }
     // THIS FUNCTIONS ENABLES THE PROCESS OF EDITING ITEMS
