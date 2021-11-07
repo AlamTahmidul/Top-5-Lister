@@ -4,15 +4,21 @@ const bcrypt = require('bcryptjs')
 
 getLoggedIn = async (req, res) => {
     auth.verify(req, res, async function () {
-        const loggedInUser = await User.findOne({ _id: req.userId });
-        return res.status(200).json({
-            loggedIn: true,
-            user: {
-                firstName: loggedInUser.firstName,
-                lastName: loggedInUser.lastName,
-                email: loggedInUser.email
-            }
-        }).send();
+        try
+        {
+            const loggedInUser = await User.findOne({ _id: req.userId });
+            return res.status(200).json({
+                loggedIn: true,
+                user: {
+                    firstName: loggedInUser.firstName,
+                    lastName: loggedInUser.lastName,
+                    email: loggedInUser.email
+                }
+            }).send();
+        } catch (err) {
+            console.log("Error in auth.verify in user-controller.js (server)")
+            console.log(err);
+        }
     })
 }
 
@@ -40,6 +46,7 @@ registerUser = async (req, res) => {
         }
         const existingUser = await User.findOne({ email: email });
         if (existingUser) {
+            console.log("USER EXISTS!");
             return res
                 .status(400)
                 .json({
