@@ -34,6 +34,10 @@ const HomeScreen = () => {
             }
             </List>;
     }
+    let editStatus = false;
+    if (store.isListNameEditActive) {
+        editStatus = true;
+    }
     return (
         <div id="top5-list-selector">
             <div id="list-selector-heading">
@@ -42,6 +46,7 @@ const HomeScreen = () => {
                 aria-label="add"
                 id="add-list-button"
                 onClick={handleCreateNewList}
+                disabled={editStatus}
             >
                 <AddIcon />
             </Fab>

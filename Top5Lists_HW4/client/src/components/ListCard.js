@@ -46,6 +46,7 @@ function ListCard(props) {
         if (newActive) {
             store.setIsListNameEditActive();
         }
+        setText(idNamePair.name);
         setEditActive(newActive);
     }
 
@@ -61,17 +62,17 @@ function ListCard(props) {
         handleClose();
     }
 
-    async function handleCancel(event) {
+    function handleCancel(event) {
         event.stopPropagation();
         store.unmarkListForDeletion();
         handleClose();
     }
 
-    function handleKeyPress(event) {
+    async function handleKeyPress(event) {
         if (event.code === "Enter") {
             let id = event.target.id.substring("list-".length);
-            store.changeListName(id, text);
-            toggleEdit();
+            await store.changeListName(id, text).then(() => {toggleEdit();});
+            // toggleEdit();
         }
     }
     function handleUpdateText(event) {
@@ -95,6 +96,7 @@ function ListCard(props) {
             id={idNamePair._id}
             key={idNamePair._id}
             sx={{ marginTop: '15px', display: 'flex', p: 1 }}
+            disabled={editActive}
             button
             onClick={(event) => {
                 handleLoadList(event, idNamePair._id)
