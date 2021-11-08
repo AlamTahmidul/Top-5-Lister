@@ -6,6 +6,7 @@ import ListItem from '@mui/material/ListItem';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { Modal, Typography, Button, Stack } from '@mui/material';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -20,6 +21,14 @@ function ListCard(props) {
     const [text, setText] = useState("");
     const { idNamePair } = props;
 
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+    let name = "";
+    if (store.listMarkedForDeletion) {
+        name = store.listMarkedForDeletion.name;
+    }
     function handleLoadList(event, id) {
         if (!event.target.disabled) {
             // CHANGE THE CURRENT LIST
@@ -43,6 +52,19 @@ function ListCard(props) {
     async function handleDeleteList(event, id) {
         event.stopPropagation();
         store.markListForDeletion(id);
+        handleOpen();
+    }
+
+    async function handleConfirm(event) {
+        event.stopPropagation();
+        store.deleteMarkedList();
+        handleClose();
+    }
+
+    async function handleCancel(event) {
+        event.stopPropagation();
+        store.unmarkListForDeletion();
+        handleClose();
     }
 
     function handleKeyPress(event) {
@@ -55,6 +77,18 @@ function ListCard(props) {
     function handleUpdateText(event) {
         setText(event.target.value);
     }
+
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+      };
 
     let cardElement =
         <ListItem
@@ -83,6 +117,22 @@ function ListCard(props) {
                     }} aria-label='delete'>
                         <DeleteIcon style={{fontSize:'48pt'}} />
                     </IconButton>
+                    <Modal
+                        open={open}
+                        onClose={handleClose}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                        >
+                        <Box sx={style}>
+                            <Typography id="modal-modal-title" variant="h6" component="h2">
+                            Delete the {name} Top 5 List?
+                            </Typography>
+                            <Stack direction="row" spacing={2}>
+                                <Button onClick={handleConfirm}>Confirm</Button>
+                                <Button onClick={handleCancel}>Cancel</Button>
+                            </Stack>
+                        </Box>
+                    </Modal>
                 </Box>
         </ListItem>
 
