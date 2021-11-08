@@ -111,10 +111,23 @@ loginUser = async (req, res) => {
                     email: user.email
                 }
             }).send();
+        } else {
+            return res
+                .status(400)
+                .json({
+                    success: false,
+                    errorMessage: "Invalid Username/Password"
+                });
         }
 
     } catch (err) {
-        console.log("Invalid Username or Password. If you have an account, then please type in your password. Otherwise, create a new account.")
+        // console.log("Invalid Username or Password. If you have an account, then please type in your password. Otherwise, create a new account.")
+        return res
+        .status(400)
+        .json({
+            success: false,
+            errorMessage: "User does not exist"
+        });
         // console.log(err);
     }
 }

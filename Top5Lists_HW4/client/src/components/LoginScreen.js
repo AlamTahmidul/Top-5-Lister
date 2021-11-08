@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -13,12 +13,21 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Copyright from './Copyright';
+import Modal from '@mui/material/Modal'
 import AuthContext from '../auth';
+import { Alert } from '@mui/material';
 import GlobalStoreContext from '../store';
 
 export default function LoginScreen() {
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext);
+
+    const [err, setErr] = useState(false);
+    const [errMsg, setErrMsg] = useState("");
+    const [open, setOpen] = useState(false);
+
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     const handleSubmit = (event) => {
     event.preventDefault();
@@ -30,8 +39,50 @@ export default function LoginScreen() {
     auth.loginUser(({
         email: data.get('email'),
         password: data.get('password')
-    }), store);
+    }), store).then((err) => {
+      if (typeof(err) != "undefined" && err.status !== 200) {
+        console.log(err.data.errorMessage);
+        setErr(true);
+        handleOpen();
+        setErrMsg(err.data.errorMessage);
+      }
+    });
   };
+
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
+  let errDiv = "";
+    if (err) {
+        errDiv = 
+            <Modal
+                open={open}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
+                <Button 
+                    variant="outlined"
+                    color="error"
+                    onClick={(e) => {handleClose(e)}}
+                >X</Button>
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                <Alert severity="error">ERROR</Alert>
+                </Typography>
+                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                    {errMsg}
+                </Typography>
+                </Box>
+            </Modal>
+    }
 
   return (
       <Grid container component="main" sx={{ height: '100vh' }}>
@@ -60,6 +111,7 @@ export default function LoginScreen() {
               alignItems: 'center',
             }}
           >
+            {errDiv}
             <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
               <LockOutlinedIcon />
             </Avatar>

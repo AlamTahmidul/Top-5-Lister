@@ -75,6 +75,12 @@ function AuthContextProvider(props) {
         } catch (err) {
             // console.log("USER EXISTS!");
             // console.log(err.response.data.errorMessage); // Gets Error Message
+            authReducer({
+                type: AuthActionType.REGISTER_USER,
+                payload: {
+                    user: null
+                }
+            })
             return err.response;
         }
     }
@@ -96,7 +102,16 @@ function AuthContextProvider(props) {
                 store.loadIdNamePairs();
             }
         } catch (err) {
-            console.log("auth.loginUser failed.");
+            // console.log("auth.loginUser failed.");
+            authReducer({
+                type: AuthActionType.SET_LOGGED_IN,
+                payload: {
+                    loggedIn: false,
+                    user: null
+                }
+            });
+            // console.log(err);
+            return err.response;
         }
     }
 

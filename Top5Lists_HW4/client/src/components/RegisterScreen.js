@@ -37,9 +37,9 @@ export default function RegisterScreen() {
             passwordVerify: formData.get('passwordVerify')
         }, store).then((err) => {
             if (typeof(err) != "undefined" && err.status !== 200) {
-                // console.log(err.data.errorMessage);
-                // setErr(true);
-                // handleOpen();
+                console.log(err.data.errorMessage);
+                setErr(true);
+                handleOpen();
                 setErrMsg(err.data.errorMessage);
             }
         });
@@ -61,16 +61,19 @@ export default function RegisterScreen() {
     let errDiv = "";
     if (err) {
         errDiv = 
-                <Modal
-                handleOpen={open}
-                handleClose={handleClose}
+            <Modal
+                open={open}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
-                <Alert severity="error">ERROR</Alert>
+                <Button 
+                    variant="outlined"
+                    color="error"
+                    onClick={(e) => {handleClose(e)}}
+                >X</Button>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                    Error
+                <Alert severity="error">ERROR</Alert>
                 </Typography>
                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                     {errMsg}
@@ -89,6 +92,7 @@ export default function RegisterScreen() {
                         alignItems: 'center',
                     }}
                 >
+                    {errDiv}
                     <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                         <LockOutlinedIcon />
                     </Avatar>

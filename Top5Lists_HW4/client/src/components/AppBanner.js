@@ -73,7 +73,7 @@ export default function AppBanner() {
 
     let editToolbar = "";
     let menu = loggedOutMenu;
-    if (auth.loggedIn) {
+    if (auth.loggedIn && auth.user != null) {
         menu = loggedInMenu;
         if (store.currentList) {
             editToolbar = <EditToolbar />;
@@ -81,7 +81,7 @@ export default function AppBanner() {
     }
     
     function getAccountMenu(loggedIn) {
-        if (loggedIn) {
+        if (loggedIn && auth.user != null) {
             const f = auth.user.firstName[0].toUpperCase();
             const l = auth.user.lastName[0].toUpperCase();
             return <Typography                        
