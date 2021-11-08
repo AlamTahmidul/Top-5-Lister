@@ -91,10 +91,6 @@ loginUser = async (req, res) => {
         console.log("loginUser (server/user-controller)");
         // console.log(req.body);
         const {email, password} = req.body;
-
-        const saltRounds = 10;
-        const salt = await bcrypt.genSalt(saltRounds);
-        const passwordHash = await bcrypt.hash(password, salt);
         
         const user = await User.findOne({email: email});
         // console.log(user);
@@ -126,7 +122,13 @@ loginUser = async (req, res) => {
 logoutUser = async (req, res) => {
     try
     {    
-        res.clearCookie("token").status(200).json({success: true}).send();
+        res.clearCookie("token").status(200).json({success: true,
+            user: {
+            firstName: null,
+            lastName: null,
+            email: null
+            }
+        }).send();
         console.log("Cookies Cleared!");
     } catch (err) {
         console.log("logout promise");

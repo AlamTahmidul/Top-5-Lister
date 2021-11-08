@@ -48,14 +48,59 @@ function Top5Item(props) {
         store.addMoveItemTransaction(sourceId, targetId);
     }
 
-    let { index } = props;
-
-    let itemClass = "top5-item";
-    if (draggedTo) {
-        itemClass = "top5-item-dragged-to";
+    function handleKeyPress(event) {
+        if (event.code === "Enter") {
+            let index = event.target.id.substring("list-".length);
+            let text = event.target.value;
+            store.addUpdateItemTransaction(index-1, text);
+            toggleEdit();
+        }
     }
 
-    return (
+    function handleToggleEdit(event) {
+        event.stopPropagation();
+        toggleEdit();
+    }
+
+    function toggleEdit() {
+        let newActive = !editActive;
+        if (newActive) {
+            store.setIsItemEditActive();
+        }
+        setEditActive(newActive);
+    }
+
+    let editStatus = false;
+    if (store.isItemEditActive) {
+        editStatus = true;
+    }
+    let { index } = props;
+
+    if (editActive) {
+        return <TextField
+            margin="normal"
+            required
+            fullWidth
+            id={'item-' + (index+1)}
+            key={props.key}
+            label="Top 5 Item"
+            name="name"
+            autoComplete="Top 5 Item"
+            className={"top5-item"}
+            onKeyPress={handleKeyPress}
+            defaultValue={props.text}
+            inputProps={{style: {fontSize: 48}}}
+            InputLabelProps={{style: {fontSize: 24}}}
+            autoFocus
+            />
+    }
+    else
+    {
+        let itemClass = "top5-item";
+        if (draggedTo) {
+            itemClass = "top5-item-dragged-to";
+        }
+        return (
             <ListItem
                 id={'item-' + (index+1)}
                 key={props.key}
@@ -83,13 +128,14 @@ function Top5Item(props) {
                 }}
             >
             <Box sx={{ p: 1 }}>
-                <IconButton aria-label='edit'>
+                <IconButton aria-label='edit' onClick={handleToggleEdit} disabled={editStatus}>
                     <EditIcon style={{fontSize:'48pt'}}  />
                 </IconButton>
             </Box>
-                <Box sx={{ p: 1, flexGrow: 1 }}>{props.text}</Box>
+            <Box sx={{ p: 1, flexGrow: 1 }}>{props.text}</Box>
             </ListItem>
     )
+}
 }
 
 export default Top5Item;

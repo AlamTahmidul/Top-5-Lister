@@ -71,10 +71,8 @@ function AuthContextProvider(props) {
                     }
                 })
                 history.push("/");
-                store.loadIdNamePairs();
             }
         } catch (err) {
-            // TODO: MODAL STUFF TO SHOW THAT USER WITH EMAIL EXISTS!
             // console.log("USER EXISTS!");
             // console.log(err.response.data.errorMessage); // Gets Error Message
             return err.response;
