@@ -166,28 +166,40 @@ function GlobalStoreContextProvider(props) {
     store.changeListName = async function (id, newName) {
         let response = await api.getTop5ListById(id);
         if (response.data.success) {
-            let top5List = response.data.top5List;
-            top5List.name = newName;
-            async function updateList(top5List) {
-                response = await api.updateTop5ListById(top5List._id, top5List);
-                if (response.data.success) {
-                    async function getListPairs(top5List) {
-                        response = await api.getTop5ListPairs();
-                        if (response.data.success) {
-                            let pairsArray = response.data.idNamePairs;
-                            storeReducer({
-                                type: GlobalStoreActionType.CHANGE_LIST_NAME,
-                                payload: {
-                                    idNamePairs: pairsArray,
-                                    top5List: top5List
+            if (auth.user.email === response.data.top5List.ownerEmail)
+            {
+                let top5List = response.data.top5List;
+                top5List.name = newName;
+                async function updateList(top5List) {
+                    response = await api.updateTop5ListById(top5List._id, top5List);
+                    if (response.data.success) {
+                        async function getListPairs(top5List) {
+                            response = await api.getTop5ListPairs();
+                            if (response.data.success) {
+                                let pairsArray = response.data.idNamePairs;
+                                let newArr = [];
+                                for (let i in pairsArray) {
+                                    const r2 = await api.getTop5ListById(pairsArray[i]["_id"]);
+                                    if (r2.data.success) {
+                                        if(r2.data.top5List["ownerEmail"] === auth.user.email) {
+                                            newArr.push({_id: r2.data.top5List._id, name: r2.data.top5List.name});
+                                        }
+                                    }
                                 }
-                            });
+                                storeReducer({
+                                    type: GlobalStoreActionType.CHANGE_LIST_NAME,
+                                    payload: {
+                                        idNamePairs: newArr,
+                                        top5List: null
+                                    }
+                                });
+                            }
                         }
+                        getListPairs(top5List);
                     }
-                    getListPairs(top5List);
                 }
+                updateList(top5List);
             }
-            updateList(top5List);
         }
     }
 
@@ -200,6 +212,7 @@ function GlobalStoreContextProvider(props) {
         
         tps.clearAllTransactions();
         history.push("/");
+        store.loadIdNamePairs();
     }
 
     // THIS FUNCTION CREATES A NEW LIST
@@ -242,7 +255,6 @@ function GlobalStoreContextProvider(props) {
                         newArr.push({_id: r2.data.top5List._id, name: r2.data.top5List.name});
                     }
                 }
-                // console.log(pairsArray[i]["_id"]);
             }
             // console.log(newArr);
             storeReducer({

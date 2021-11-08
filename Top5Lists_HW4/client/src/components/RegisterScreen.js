@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import AuthContext from '../auth'
 import Copyright from './Copyright'
 import Avatar from '@mui/material/Avatar';
@@ -11,24 +11,75 @@ import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Modal from '@mui/material/Modal'
+import Alert from "@mui/material/Alert"
 import { GlobalStoreContext } from '../store'
 
 export default function RegisterScreen() {
     const { auth } = useContext(AuthContext);
-    const { store } = useContext(GlobalStoreContext)
+    const { store } = useContext(GlobalStoreContext);
+
+    const [err, setErr] = useState(false);
+    const [errMsg, setErrMsg] = useState("");
+    const [open, setOpen] = useState(false);
+
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     const handleSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
-        auth.registerUser({
+        const r = auth.registerUser({
             firstName: formData.get('firstName'),
             lastName: formData.get('lastName'),
             email: formData.get('email'),
             password: formData.get('password'),
             passwordVerify: formData.get('passwordVerify')
-        }, store);
+        }, store).then((err) => {
+            if (typeof(err) != "undefined" && err.status !== 200) {
+                // console.log(err.data.errorMessage);
+                // setErr(true);
+                // handleOpen();
+                setErrMsg(err.data.errorMessage);
+            }
+        });
+
     };
 
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+    };
+
+    let errDiv = "";
+    if (err) {
+        errDiv = 
+                <Modal
+                handleOpen={open}
+                handleClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
+                <Alert severity="error">ERROR</Alert>
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                    Error
+                </Typography>
+                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                    {errMsg}
+                </Typography>
+                </Box>
+            </Modal>
+        // console.log(errDiv);
+    }
+    // console.log(errDiv);
     return (
             <Container component="main" maxWidth="xs">
                 <CssBaseline />

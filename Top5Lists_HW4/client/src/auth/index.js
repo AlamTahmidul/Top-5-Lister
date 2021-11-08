@@ -75,17 +75,19 @@ function AuthContextProvider(props) {
             }
         } catch (err) {
             // TODO: MODAL STUFF TO SHOW THAT USER WITH EMAIL EXISTS!
-            console.log("USER EXISTS!");
+            // console.log("USER EXISTS!");
+            // console.log(err.response.data.errorMessage); // Gets Error Message
+            return err.response;
         }
     }
 
     auth.loginUser = async function(userData, store) {
         try
         {
-            console.log(userData); // GETS EXECUTED!!!
+            // console.log(userData);
             const response = await api.loginUser(userData);
             if (response.status === 200) {
-                console.log(response.data);
+                // console.log(response.data);
                 authReducer({
                     type: AuthActionType.REGISTER_USER,
                     payload: {
@@ -100,7 +102,6 @@ function AuthContextProvider(props) {
         }
     }
 
-    // TODO: Handle Logout
     auth.logoutUser = async function() {
         try
         {

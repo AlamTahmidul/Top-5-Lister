@@ -17,7 +17,7 @@ getLoggedIn = async (req, res) => {
             }).send();
         } catch (err) {
             console.log("Error in auth.verify in user-controller.js (server)")
-            console.log(err);
+            // console.log(err);
         }
     })
 }
@@ -89,7 +89,7 @@ loginUser = async (req, res) => {
     try
     {
         console.log("loginUser (server/user-controller)");
-        console.log(req.body);
+        // console.log(req.body);
         const {email, password} = req.body;
 
         const saltRounds = 10;
@@ -97,7 +97,7 @@ loginUser = async (req, res) => {
         const passwordHash = await bcrypt.hash(password, salt);
         
         const user = await User.findOne({email: email});
-        console.log(user);
+        // console.log(user);
         const passMatch = await bcrypt.compare(password, user.passwordHash);
         if (passMatch) {
             console.log("USER FOUND!")
@@ -124,8 +124,13 @@ loginUser = async (req, res) => {
 }
 
 logoutUser = async (req, res) => {
-    await res.clearCookie("token").status(200).json({success: true}).send();
-    console.log("Cookies Cleared!");
+    try
+    {    
+        res.clearCookie("token").status(200).json({success: true}).send();
+        console.log("Cookies Cleared!");
+    } catch (err) {
+        console.log("logout promise");
+    }
 }
 
 module.exports = {
