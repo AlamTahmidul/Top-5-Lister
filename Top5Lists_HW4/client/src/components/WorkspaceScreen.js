@@ -4,6 +4,7 @@ import List from '@mui/material/List';
 import { Typography } from '@mui/material'
 import { GlobalStoreContext } from '../store/index.js'
 import Statusbar from './Statusbar';
+import { Redirect } from 'react-router';
 /*
     This React component lets us edit a loaded list, which only
     happens when we are on the proper route.
@@ -27,6 +28,8 @@ function WorkspaceScreen() {
                     ))
                 }
             </List>;
+    } else { // Redirect to Main Page!
+        return (<Redirect to="/" />);
     }
     return (
         <div id="top5-workspace">
