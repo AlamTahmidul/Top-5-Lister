@@ -3,6 +3,7 @@ import Top5Item from './Top5Item.js'
 import List from '@mui/material/List';
 import { Typography } from '@mui/material'
 import { GlobalStoreContext } from '../store/index.js'
+import Statusbar from './Statusbar';
 /*
     This React component lets us edit a loaded list, which only
     happens when we are on the proper route.
@@ -39,6 +40,7 @@ function WorkspaceScreen() {
                 </div>
                 {editItems}
             </div>
+            <Statusbar />
         </div>
     )
 }

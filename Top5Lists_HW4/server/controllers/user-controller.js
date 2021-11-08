@@ -46,7 +46,6 @@ registerUser = async (req, res) => {
         }
         const existingUser = await User.findOne({ email: email });
         if (existingUser) {
-            console.log("USER EXISTS!");
             return res
                 .status(400)
                 .json({
@@ -81,11 +80,56 @@ registerUser = async (req, res) => {
         }).send();
     } catch (err) {
         console.error(err);
-        res.status(500).send();
+        // return res.status(500).send();
     }
+}
+
+loginUser = async (req, res) => {
+    // LOGIN THE USER
+    try
+    {
+        console.log("loginUser (server/user-controller)");
+        console.log(req.body);
+        const {email, password} = req.body;
+
+        const saltRounds = 10;
+        const salt = await bcrypt.genSalt(saltRounds);
+        const passwordHash = await bcrypt.hash(password, salt);
+        
+        const user = await User.findOne({email: email});
+        const passMatch = await bcrypt.compare(password, passwordHash);
+        if (passMatch) {
+            console.log("USER FOUND!")
+            const token = auth.signToken(user);
+
+            await res.cookie("token", token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: "none"
+            }).status(200).json({
+                success: true,
+                user: {
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email
+                }
+            }).send();
+        }
+
+    } catch (err) {
+        console.log("Invalid Username or Password. If you have an account, then please type in your password. Otherwise, create a new account.")
+        // console.log(err);
+    }
+}
+
+logoutUser = async (req, res) => {
+    await res.clearCookie("token").status(200).json({success: true}).send();
+    console.log("Cookies Cleared!");
 }
 
 module.exports = {
     getLoggedIn,
-    registerUser
+    registerUser,
+    loginUser,
+    logoutUser
 }

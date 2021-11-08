@@ -74,7 +74,29 @@ function AuthContextProvider(props) {
                 store.loadIdNamePairs();
             }
         } catch (err) {
-            console.log(err);
+            // TODO: MODAL STUFF TO SHOW THAT USER WITH EMAIL EXISTS!
+            console.log("USER EXISTS!");
+        }
+    }
+
+    auth.loginUser = async function(userData, store) {
+        try
+        {
+            console.log(userData); // GETS EXECUTED!!!
+            const response = await api.loginUser(userData);
+            if (response.status === 200) {
+                console.log(response.data);
+                authReducer({
+                    type: AuthActionType.REGISTER_USER,
+                    payload: {
+                        user: response.data.user
+                    }
+                });
+                history.push("/");
+                store.loadIdNamePairs();
+            }
+        } catch (err) {
+            console.log("auth.loginUser failed.");
         }
     }
 
@@ -83,6 +105,15 @@ function AuthContextProvider(props) {
         try
         {
             console.log("Logged out!");
+            const response = await api.logoutUser();
+            if (response.status === 200) {
+                console.log("Logging Out...");
+                setAuth({
+                    user: null,
+                    loggedIn: false
+                });
+                history.push("/");
+            }
         } catch (err) {
             console.log(err);
         }
