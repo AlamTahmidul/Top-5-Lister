@@ -95,7 +95,10 @@ export default function AppBanner() {
         } else
             return <AccountCircle />;
     }
-
+    let editStatus = false;
+    if (store.currentList) {
+        editStatus = true;
+    }
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static">
@@ -111,6 +114,7 @@ export default function AppBanner() {
                     <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                         <IconButton
+                            disabled={editStatus}
                             size="large"
                             edge="end"
                             aria-label="account of current user"

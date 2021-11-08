@@ -29,7 +29,7 @@ export default function RegisterScreen() {
     const handleSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
-        const r = auth.registerUser({
+        auth.registerUser({
             firstName: formData.get('firstName'),
             lastName: formData.get('lastName'),
             email: formData.get('email'),
@@ -77,9 +77,7 @@ export default function RegisterScreen() {
                 </Typography>
                 </Box>
             </Modal>
-        // console.log(errDiv);
     }
-    // console.log(errDiv);
     return (
             <Container component="main" maxWidth="xs">
                 <CssBaseline />

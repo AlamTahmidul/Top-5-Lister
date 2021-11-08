@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 import Button from '@mui/material/Button';
 import UndoIcon from '@mui/icons-material/Undo';
@@ -28,19 +28,21 @@ function EditToolbar() {
         store.closeCurrentList();
     }
     let editStatus = false;
-    if (store.isListNameEditActive || store.isItemEditActive) {
+    if (store.isItemEditActive) {
         editStatus = true;
     }  
     return (
         <div id="edit-toolbar">
             <Button 
                 id='undo-button'
+                disabled={editStatus}
                 onClick={handleUndo}
                 variant="contained">
                     <UndoIcon />
             </Button>
             <Button 
                 id='redo-button'
+                disabled={editStatus}
                 onClick={handleRedo}
                 variant="contained">
                     <RedoIcon />

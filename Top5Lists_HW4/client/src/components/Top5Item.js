@@ -82,7 +82,6 @@ function Top5Item(props) {
             required
             fullWidth
             id={'item-' + (index+1)}
-            key={props.key}
             label="Top 5 Item"
             name="name"
             autoComplete="Top 5 Item"
@@ -103,7 +102,6 @@ function Top5Item(props) {
         return (
             <ListItem
                 id={'item-' + (index+1)}
-                key={props.key}
                 className={itemClass}
                 onDragStart={(event) => {
                     handleDragStart(event, (index+1))
@@ -127,8 +125,8 @@ function Top5Item(props) {
                     width: '100%'
                 }}
             >
-            <Box sx={{ p: 1 }}>
-                <IconButton aria-label='edit' onClick={handleToggleEdit} disabled={editStatus}>
+            <Box sx={{ p: 1 }} disabled={editStatus}>
+                <IconButton aria-label='edit' onClick={handleToggleEdit}>
                     <EditIcon style={{fontSize:'48pt'}}  />
                 </IconButton>
             </Box>
