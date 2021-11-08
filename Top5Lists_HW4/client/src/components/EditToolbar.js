@@ -15,16 +15,20 @@ function EditToolbar() {
     const { store } = useContext(GlobalStoreContext);
 
     function handleUndo() {
-        store.undo();
+        if (store.canUndo) {
+            store.undo();
+        }
     }
     function handleRedo() {
-        store.redo();
+        if (store.canRedo) {
+            store.redo();
+        }
     }
     function handleClose() {
         store.closeCurrentList();
     }
     let editStatus = false;
-    if (store.isListNameEditActive) {
+    if (store.isListNameEditActive || store.isItemEditActive) {
         editStatus = true;
     }  
     return (

@@ -97,7 +97,8 @@ loginUser = async (req, res) => {
         const passwordHash = await bcrypt.hash(password, salt);
         
         const user = await User.findOne({email: email});
-        const passMatch = await bcrypt.compare(password, passwordHash);
+        console.log(user);
+        const passMatch = await bcrypt.compare(password, user.passwordHash);
         if (passMatch) {
             console.log("USER FOUND!")
             const token = auth.signToken(user);

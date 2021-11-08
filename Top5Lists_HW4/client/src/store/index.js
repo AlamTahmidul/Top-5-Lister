@@ -233,9 +233,21 @@ function GlobalStoreContextProvider(props) {
         const response = await api.getTop5ListPairs();
         if (response.data.success) {
             let pairsArray = response.data.idNamePairs;
+            // console.log(pairsArray);
+            let newArr = [];
+            for (let i in pairsArray) {
+                const r2 = await api.getTop5ListById(pairsArray[i]["_id"]);
+                if (r2.data.success) {
+                    if(r2.data.top5List["ownerEmail"] === auth.user.email) {
+                        newArr.push({_id: r2.data.top5List._id, name: r2.data.top5List.name});
+                    }
+                }
+                // console.log(pairsArray[i]["_id"]);
+            }
+            // console.log(newArr);
             storeReducer({
                 type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
-                payload: pairsArray
+                payload: newArr
             });
         }
         else {

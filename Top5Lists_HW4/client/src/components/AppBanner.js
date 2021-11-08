@@ -82,7 +82,6 @@ export default function AppBanner() {
     
     function getAccountMenu(loggedIn) {
         if (loggedIn) {
-            let initials = "";
             const f = auth.user.firstName[0].toUpperCase();
             const l = auth.user.lastName[0].toUpperCase();
             return <Typography                        

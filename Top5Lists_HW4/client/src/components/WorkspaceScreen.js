@@ -43,7 +43,6 @@ function WorkspaceScreen() {
                 </div>
                 {editItems}
             </div>
-            <Statusbar />
         </div>
     )
 }
