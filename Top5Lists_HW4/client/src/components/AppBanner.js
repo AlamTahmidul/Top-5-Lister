@@ -79,6 +79,10 @@ export default function AppBanner() {
             editToolbar = <EditToolbar />;
         }
     }
+    let editStatus = false;
+    if (store.currentList || store.isItemEditActive) {
+        editStatus = true;
+    }
     
     function getAccountMenu(loggedIn) {
         if (loggedIn && auth.user != null) {
@@ -88,17 +92,15 @@ export default function AppBanner() {
                         variant="h4"
                         noWrap
                         component="div"
-                        sx={{ display: { xs: 'none', sm: 'block' } }}                        
+                        sx={{ display: { xs: 'none', sm: 'block' } }}
+                        disabled={editStatus}                 
                     >
                         {f}<sup>{l}</sup>
                     </Typography>
         } else
             return <AccountCircle />;
     }
-    let editStatus = false;
-    if (store.currentList) {
-        editStatus = true;
-    }
+
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static">
@@ -107,9 +109,9 @@ export default function AppBanner() {
                         variant="h4"
                         noWrap
                         component="div"
-                        sx={{ display: { xs: 'none', sm: 'block' } }}                        
+                        sx={{ display: { xs: 'none', sm: 'block' } }}                    
                     >
-                        <Link style={{ textDecoration: 'none', color: 'white' }} to='/'>T<sup>5</sup>L</Link>
+                        <Link style={editStatus ? {pointerEvents: 'none'} : { textDecoration: 'none', color: 'white' }} to='/'>T<sup>5</sup>L</Link>
                     </Typography>
                     <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>

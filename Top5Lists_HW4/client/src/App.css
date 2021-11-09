@@ -255,6 +255,7 @@ input {
 
 .disabled {
   background-color: lightgray;
+  pointer-events: none;
 }
 
 .disabled:hover {

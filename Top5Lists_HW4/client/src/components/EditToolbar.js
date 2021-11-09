@@ -30,19 +30,20 @@ function EditToolbar() {
     let editStatus = false;
     if (store.isItemEditActive) {
         editStatus = true;
-    }  
+    }
+    // console.log(store.canUndo());
     return (
         <div id="edit-toolbar">
             <Button 
                 id='undo-button'
-                disabled={editStatus}
+                disabled={editStatus || !store.canUndo()}
                 onClick={handleUndo}
                 variant="contained">
                     <UndoIcon />
             </Button>
             <Button 
                 id='redo-button'
-                disabled={editStatus}
+                disabled={editStatus || !store.canRedo()}
                 onClick={handleRedo}
                 variant="contained">
                     <RedoIcon />
