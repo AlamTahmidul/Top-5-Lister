@@ -7,6 +7,14 @@ import IconButton from '@mui/material/IconButton';
 import ListItem from '@mui/material/ListItem';
 import TextField from '@mui/material/TextField';
 
+import { styled } from '@mui/material/styles';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
+import Collapse from '@mui/material/Collapse';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
+
 /*
     This is a card in our list of top 5 lists. It lets select
     a list for editing and it has controls for changing its 
@@ -14,6 +22,18 @@ import TextField from '@mui/material/TextField';
     
     @author McKilla Gorilla
 */
+
+const ExpandMore = styled((props) => {
+    const { expand, ...other } = props;
+    return <IconButton {...other} />;
+  })(({ theme, expand }) => ({
+    transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+    marginLeft: 'auto',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    }),
+  }));
+
 function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const [editActive, setEditActive] = useState(false);
@@ -73,35 +93,90 @@ function ListCard(props) {
     if (store.isListNameEditActive) {
         cardStatus = true;
     }
+
+    const [expanded, setExpanded] = useState(false);
+
+    const handleExpandClick = () => {
+      setExpanded(!expanded);
+    }; 
+
     let cardElement =
-        <ListItem
-            id={idNamePair._id}
-            key={idNamePair._id}
-            sx={{ marginTop: '15px', display: 'flex', p: 1 }}
-            style={{ width: '100%' }}
-            button
-            onClick={(event) => {
-                handleLoadList(event, idNamePair._id)
-            }
-            }
-            style={{
-                fontSize: '48pt'
-            }}
-        >
-                <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
-                <Box sx={{ p: 1 }}>
-                    <IconButton onClick={handleToggleEdit} aria-label='edit'>
-                        <EditIcon style={{fontSize:'48pt'}} />
-                    </IconButton>
-                </Box>
-                <Box sx={{ p: 1 }}>
-                    <IconButton onClick={(event) => {
-                        handleDeleteList(event, idNamePair._id)
-                    }} aria-label='delete'>
-                        <DeleteIcon style={{fontSize:'48pt'}} />
-                    </IconButton>
-                </Box>
-        </ListItem>
+    <Card>
+        <CardContent>
+            <ListItem
+                id={idNamePair._id}
+                key={idNamePair._id}
+                sx={{ marginTop: '15px', display: 'flex', p: 1 }}
+                style={{ width: '100%', fontSize: '48pt' }}
+                button
+                onClick={(event) => {
+                    handleLoadList(event, idNamePair._id)
+                }
+                }
+                style={{
+                    fontSize: '48pt'
+                }}
+            >
+                    <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
+                    <Box sx={{ p: 1 }}>
+                        <IconButton onClick={handleToggleEdit} aria-label='edit'>
+                            <EditIcon style={{fontSize:'48pt'}} />
+                        </IconButton>
+                    </Box>
+                    <Box sx={{ p: 1 }}>
+                        <IconButton onClick={(event) => {
+                            handleDeleteList(event, idNamePair._id)
+                        }} aria-label='delete'>
+                            <DeleteIcon style={{fontSize:'48pt'}} />
+                        </IconButton>
+                    </Box>
+            </ListItem>
+        </CardContent>
+
+        <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <CardContent>
+            <ListItem
+                id={idNamePair._id}
+                key={idNamePair._id}
+                sx={{ marginTop: '15px', display: 'flex', p: 1 }}
+                style={{ width: '100%' }}
+                button
+                onClick={(event) => {
+                    handleLoadList(event, idNamePair._id)
+                }
+                }
+                style={{
+                    fontSize: '48pt'
+                }}
+            >
+                    <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
+                    <Box sx={{ p: 1 }}>
+                        <IconButton onClick={handleToggleEdit} aria-label='edit'>
+                            <EditIcon style={{fontSize:'48pt'}} />
+                        </IconButton>
+                    </Box>
+                    <Box sx={{ p: 1 }}>
+                        <IconButton onClick={(event) => {
+                            handleDeleteList(event, idNamePair._id)
+                        }} aria-label='delete'>
+                            <DeleteIcon style={{fontSize:'48pt'}} />
+                        </IconButton>
+                    </Box>
+            </ListItem>
+        </CardContent>
+        </Collapse>
+        
+        <CardActions disableSpacing>
+            <ExpandMore
+            expand={expanded}
+            onClick={handleExpandClick}
+            aria-expanded={expanded}
+            aria-label="show more"
+            >
+            <ExpandMoreIcon />
+            </ExpandMore>
+        </CardActions>
+    </Card>
 
     if (editActive) {
         cardElement =
