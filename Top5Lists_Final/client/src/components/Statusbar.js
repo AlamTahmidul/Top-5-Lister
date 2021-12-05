@@ -13,7 +13,7 @@ function Statusbar() {
     if (store.currentList)
         text = store.currentList.name;
     return (
-        <div id="top5-statusbar">
+        <div id="top5-statusbar" style={{background:"transparent"}}>
             <Typography variant="h4">{text}</Typography>
         </div>
     );

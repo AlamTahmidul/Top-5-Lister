@@ -6,6 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 import ListItem from '@mui/material/ListItem';
 import TextField from '@mui/material/TextField';
+import { Grid } from '@mui/material';
 
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
@@ -13,6 +14,7 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Collapse from '@mui/material/Collapse';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import KeyboardDoubleArrowDownRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowDownRounded';
 
 
 /*
@@ -39,6 +41,11 @@ function ListCard(props) {
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
     const { idNamePair, selected } = props;
+    const [expanded, setExpanded] = useState(false);
+
+    const handleExpandClick = () => {
+      setExpanded(!expanded);
+    }; 
 
     function handleLoadList(event, id) {
         console.log("handleLoadList for " + id);
@@ -94,16 +101,13 @@ function ListCard(props) {
         cardStatus = true;
     }
 
-    const [expanded, setExpanded] = useState(false);
-
-    const handleExpandClick = () => {
-      setExpanded(!expanded);
-    }; 
-
     let cardElement =
     <Card>
         <CardContent>
-            <ListItem
+            <Grid>
+                Wassup
+            </Grid>
+            {/* <ListItem
                 id={idNamePair._id}
                 key={idNamePair._id}
                 sx={{ marginTop: '15px', display: 'flex', p: 1 }}
@@ -130,7 +134,7 @@ function ListCard(props) {
                             <DeleteIcon style={{fontSize:'48pt'}} />
                         </IconButton>
                     </Box>
-            </ListItem>
+            </ListItem> */}
         </CardContent>
 
         <Collapse in={expanded} timeout="auto" unmountOnExit>
@@ -173,7 +177,7 @@ function ListCard(props) {
             aria-expanded={expanded}
             aria-label="show more"
             >
-            <ExpandMoreIcon />
+            <KeyboardDoubleArrowDownRoundedIcon />
             </ExpandMore>
         </CardActions>
     </Card>

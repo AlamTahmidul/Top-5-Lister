@@ -47,11 +47,12 @@ export default function AppBanner() {
                 vertical: 'top',
                 horizontal: 'right',
             }}
+            
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleMenuClose}><Link to='/login/'>Login</Link></MenuItem>
-            <MenuItem onClick={handleMenuClose}><Link to='/register/'>Create New Account</Link></MenuItem>
+            <MenuItem divider={true} onClick={handleMenuClose}><Link style={{textDecoration:"none",color:"black"}} to='/login/'><b>Login</b></Link></MenuItem>
+            <MenuItem onClick={handleMenuClose}><Link style={{textDecoration:"none",color:"black"}} to='/register/'><b>Create New Account</b></Link></MenuItem>
         </Menu>
     );
     const loggedInMenu = 
@@ -70,7 +71,7 @@ export default function AppBanner() {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            <MenuItem onClick={handleLogout}  style={{textDecoration:"none", color:"black"}}><b>Logout</b></MenuItem>
         </Menu>        
 
     let editToolbar = "";
