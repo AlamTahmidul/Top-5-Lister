@@ -14,7 +14,7 @@ import { Typography } from "@mui/material";
 */
 function Top5Item2(props) {
     const { store } = useContext(GlobalStoreContext);
-    const [editActive, setEditActive] = useState(true);
+    const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
 
     function handleKeyPress(event) {
@@ -57,11 +57,11 @@ function Top5Item2(props) {
                 sx={{ display: 'flex', p: 1 }}
                 style={{background: "#d4af37", color: "#2c2f70", width: "100%"}}
             >
-            {/* <Box sx={{ p: 1 }}>
+            <Box sx={{ p: 1 }}>
                 <IconButton onClick={handleToggleEdit} aria-label='edit'>
                     <EditIcon style={{fontSize:'48pt'}}  />
                 </IconButton>
-            </Box> */}
+            </Box>
                 <Typography variant="h3">{props.text}</Typography>
             </ListItem>
 
@@ -99,7 +99,6 @@ function Top5Item2(props) {
                 defaultValue={props.text}
                 inputProps={{style: {fontSize: 48}}}
                 InputLabelProps={{style: {fontSize: 24}}}
-                autoFocus
             />
     }
     return (

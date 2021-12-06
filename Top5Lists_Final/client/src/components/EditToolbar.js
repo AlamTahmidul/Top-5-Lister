@@ -27,13 +27,13 @@ function EditToolbar() {
     }
     return (
         <div id="edit-toolbar">
-            <Button 
+            {/* <Button 
                 disabled={editStatus}
                 id='close-button'
                 onClick={handleClose}
                 variant="contained">
                     <CloseIcon />
-            </Button>
+            </Button> */}
         </div>
     )
 }

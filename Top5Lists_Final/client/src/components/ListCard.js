@@ -126,9 +126,10 @@ function ListCard(props) {
         </IconButton>
     let cardClass = "original-view"
     if (idNamePair.isPublished) {
+        let format = idNamePair.createdAt.substring(0, "2021-05-06".length);
         status =
         <Box sx={{ p: 1, flexGrow: 1 }}>
-            <Typography variant="h6" style={{color: "green"}}>Published</Typography>
+            <Typography variant="h6" style={{color: "green"}}>Published: {format}</Typography>
         </Box>
         cardClass = "published-view"
     }
@@ -139,7 +140,8 @@ function ListCard(props) {
             if (store.currentlyOpenedLists[i]._id === idNamePair._id) {
                 let items = store.currentlyOpenedLists[i].items;
                 editItems = 
-                <Box sx={{ p: 1, flexGrow: 1 }} id="top5-list-view">
+                <Grid container id="top5-list-view">
+                    <Grid item>
                     {
                         items.map((item, index) => (
                             <Top5Item 
@@ -149,7 +151,8 @@ function ListCard(props) {
                             />
                         ))
                     }
-                </Box>
+                    </Grid>
+                </Grid>
             }
         }
     }
@@ -198,7 +201,7 @@ function ListCard(props) {
                     <Grid container spacing={6}>
                         <Grid item xs={6}>
                             <Grid container style={{background:"#2c2f70"}}>
-                                <Grid item xs={1.5}>
+                                <Grid item>
                                         <Box sx={{ p: 1, flexGrow: 1 }} id="top5-list-view">
                                             <ListItem className="item-number-view"><Typography variant="h3">1.</Typography></ListItem>
                                             <ListItem className="item-number-view"><Typography variant="h3">2.</Typography></ListItem>
@@ -207,7 +210,7 @@ function ListCard(props) {
                                             <ListItem className="item-number-view"><Typography variant="h3">5.</Typography></ListItem>
                                         </Box>
                                 </Grid>
-                                <Grid item xs={2}>
+                                <Grid item>
                                         {editItems}
                                 </Grid>
                             </Grid>

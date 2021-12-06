@@ -55,6 +55,7 @@ function Top5Item(props) {
                 id={'item-' + (index+1)}
                 className={"top5-item-view"}
                 sx={{ display: 'flex', p: 1 }}
+                style={{width: "100%"}}
             >
             {/* <Box sx={{ p: 1 }}>
                 <IconButton onClick={handleToggleEdit} aria-label='edit'>
@@ -84,7 +85,8 @@ function Top5Item(props) {
             />
     }
     return (
-        cardElement
+            cardElement
+
     );
 }
 

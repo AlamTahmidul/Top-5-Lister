@@ -47,7 +47,6 @@ function WorkspaceScreen() {
                     <Button onClick={handleSave}>Save</Button>
                     <Button onClick={handlePublish}>Publish</Button>
                 </ButtonGroup>
-                
             </List>;
     }
     return (
