@@ -105,7 +105,7 @@ function GlobalStoreContextProvider(props) {
                     isListNameEditActive: false,
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
-                    currentlyOpenedLists: []
+                    currentlyOpenedLists: store.currentlyOpenedLists
                 });
             }
             // PREPARE TO DELETE A LIST
@@ -375,6 +375,22 @@ function GlobalStoreContextProvider(props) {
         const response = await api.getTop5ListById(id);
         if (response.status === 200) {
             console.log(store.currentlyOpenedLists);
+
+            let response1 = await api.getTop5ListById(id);
+            if (response1.status === 200) {
+                response1.data.top5List.views += 1;
+                console.log(response1.data.top5List);
+                let response = await api.updateTop5ListById(id, response1.data.top5List);
+                if (response.status === 200) {
+                    console.log("UPDATED")
+                    storeReducer({
+                        type: GlobalStoreActionType.SET_OPENED_LISTS,
+                        payload: store.currentlyOpenedLists
+                    });
+                    store.loadIdNamePairs();
+                }
+            }
+            
             store.currentlyOpenedLists.push(response.data.top5List);
             storeReducer({
                 type: GlobalStoreActionType.SET_OPENED_LISTS,
@@ -387,13 +403,7 @@ function GlobalStoreContextProvider(props) {
         // console.log("UNADD");
         for (let l in store.currentlyOpenedLists) {
             if (store.currentlyOpenedLists[l]._id === id) {
-                let x = store.currentlyOpenedLists.splice(l, 1);
-                // console.log("MATCH");
-                // console.log(x);
-                storeReducer({
-                    type: GlobalStoreActionType.SET_OPENED_LISTS,
-                    payload: store.currentlyOpenedLists
-                });
+                store.currentlyOpenedLists.splice(l, 1);
                 break;
             }
         }

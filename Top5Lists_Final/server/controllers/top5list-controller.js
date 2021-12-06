@@ -156,7 +156,7 @@ getTop5Lists = async (req, res) => {
 }
 updateTop5List = async (req, res) => {
     const body = req.body
-    console.log("updateTop5List: " + JSON.stringify(body));
+    console.log("\nupdateTop5List: " + JSON.stringify(body));
     console.log("req.body.name, req.body.items: " + req.body.name + ", " + req.body.items);
 
     if (!body) {
@@ -186,6 +186,10 @@ updateTop5List = async (req, res) => {
 
                     list.name = body.top5List.name;
                     list.items = body.top5List.items;
+                    list.likes = body.top5List.likes;
+                    list.dislikes = body.top5List.dislikes;
+                    list.views = body.top5List.views;
+                    list.isPublished = body.top5List.isPublished;
                     list
                         .save()
                         .then(() => {

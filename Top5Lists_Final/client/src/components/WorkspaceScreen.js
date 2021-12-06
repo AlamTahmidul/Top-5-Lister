@@ -15,7 +15,7 @@ function WorkspaceScreen() {
     let editItems = "";
     if (store.currentList) {
         editItems = 
-            <List id="edit-items" sx={{ width: '100%', bgcolor: 'background.paper' }}>
+            <List id="edit-items" sx={{ width: '100%', bgcolor: 'blue' }}>
                 {
                     store.currentList.items.map((item, index) => (
                         <Top5Item 

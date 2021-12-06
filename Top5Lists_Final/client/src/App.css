@@ -239,10 +239,8 @@ body {
 .item-number {
   justify-content: center;
   width: 100%;
-  border: 1px 0px 1px 1px;
-  border-color: black;
-  background-color: linen;
-  color: black;
+  background-color: #d4af37;
+  color: #2c2f70;
 }
 
 .item-number-view {
