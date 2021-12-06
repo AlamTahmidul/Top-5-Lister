@@ -410,6 +410,16 @@ function GlobalStoreContextProvider(props) {
         // console.log(store.currentlyOpenedLists);
     }
 
+    store.savePublish = async function (status) {
+        if (status === "save") {
+            store.updateCurrentList();
+        } else if (status === "publish") {
+            store.currentList.isPublished = true;
+            store.updateCurrentList();
+        }
+        store.closeCurrentList();
+    }
+
     // THIS FUNCTION ENABLES THE PROCESS OF EDITING A LIST NAME
     store.setIsListNameEditActive = function () {
         storeReducer({

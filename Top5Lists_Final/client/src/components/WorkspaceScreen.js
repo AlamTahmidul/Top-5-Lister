@@ -1,7 +1,7 @@
 import { useContext } from 'react'
-import Top5Item from './Top5Item.js'
+import Top5Item2 from './Top5Item2.js'
 import List from '@mui/material/List';
-import { Typography } from '@mui/material'
+import { Button, ButtonGroup, Typography } from '@mui/material'
 import { GlobalStoreContext } from '../store/index.js'
 /*
     This React component lets us edit a loaded list, which only
@@ -9,8 +9,26 @@ import { GlobalStoreContext } from '../store/index.js'
     
     @author McKilla Gorilla
 */
+
+const buttonPlacementStyle = {
+    position: 'absolute',
+    textAlign: 'center',
+    bottom: "0%",
+    right: "-100%",
+    fontSize: '24pt',
+    fontWeight: 'bold',
+}
+
 function WorkspaceScreen() {
     const { store } = useContext(GlobalStoreContext);
+
+    function handleSave() {
+        store.savePublish("save");
+    }
+
+    function handlePublish() {
+        store.savePublish("publish");
+    }
 
     let editItems = "";
     if (store.currentList) {
@@ -18,13 +36,18 @@ function WorkspaceScreen() {
             <List id="edit-items" sx={{ width: '100%', bgcolor: 'blue' }}>
                 {
                     store.currentList.items.map((item, index) => (
-                        <Top5Item 
+                        <Top5Item2 
                             key={'top5-item-' + (index+1)}
                             text={item}
                             index={index} 
                         />
                     ))
                 }
+                <ButtonGroup color="primary" aria-label="medium secondary button group" style={buttonPlacementStyle}>
+                    <Button onClick={handleSave}>Save</Button>
+                    <Button onClick={handlePublish}>Publish</Button>
+                </ButtonGroup>
+                
             </List>;
     }
     return (

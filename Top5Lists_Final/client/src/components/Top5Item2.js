@@ -14,8 +14,7 @@ import { Typography } from "@mui/material";
 */
 function Top5Item2(props) {
     const { store } = useContext(GlobalStoreContext);
-    const [editActive, setEditActive] = useState(false);
-    const [draggedTo, setDraggedTo] = useState(0);
+    const [editActive, setEditActive] = useState(true);
     const [text, setText] = useState("");
 
     function handleKeyPress(event) {
@@ -34,6 +33,7 @@ function Top5Item2(props) {
 
     function handleUpdateText(event) {
         setText(event.target.value);
+        console.log(text);
     }
 
     function toggleEdit() {
@@ -53,8 +53,9 @@ function Top5Item2(props) {
     let cardElement =
             <ListItem
                 id={'item-' + (index+1)}
-                className={"top5-item-view"}
+                className={"top5-item"}
                 sx={{ display: 'flex', p: 1 }}
+                style={{background: "#d4af37", color: "#2c2f70", width: "100%"}}
             >
             {/* <Box sx={{ p: 1 }}>
                 <IconButton onClick={handleToggleEdit} aria-label='edit'>
@@ -63,6 +64,24 @@ function Top5Item2(props) {
             </Box> */}
                 <Typography variant="h3">{props.text}</Typography>
             </ListItem>
+
+    // let cardElement =  
+    //     <TextField
+    //         margin="normal"
+    //         required
+    //         fullWidth
+    //         id={"item-" + (index+1)}
+    //         label={"Item #" + (index+1)}
+    //         name="item"
+    //         autoComplete="Top 5 List Item"
+    //         className='top5-item'
+    //         onKeyPress={handleKeyPress}
+    //         onChange={handleUpdateText}
+    //         defaultValue={props.text}
+    //         inputProps={{style: {fontSize: 48}}}
+    //         InputLabelProps={{style: {fontSize: 24}}}
+    //         autoFocus
+    //     />
 
     if (editActive) {
         cardElement =    

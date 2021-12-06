@@ -11,6 +11,7 @@ import SplashScreen from './SplashScreen'
 import Statusbar from './Statusbar'
 import Top5Item from './Top5Item'
 import WorkspaceScreen from './WorkspaceScreen'
+import Top5Item2 from './Top5Item2'
 /*
     This serves as a module so that we can import
     all the other components as we wish.
@@ -28,5 +29,6 @@ export {
     RegisterScreen,
     SplashScreen,
     Statusbar, 
-    Top5Item, 
+    Top5Item,
+    Top5Item2,
     WorkspaceScreen }
