@@ -16,6 +16,7 @@ import FilterListOutlinedIcon from '@mui/icons-material/FilterListOutlined';
 import { Grid, IconButton, SvgIcon } from '@mui/material';
 
 import { ReactComponent as Logo } from './../common/images/sum.svg'
+import AuthContext from '../auth';
 
 /*
     This React component lists all the top5 lists in the UI.
@@ -24,43 +25,24 @@ import { ReactComponent as Logo } from './../common/images/sum.svg'
 */
 const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
+    const {auth} = useContext(AuthContext)
 
     const [buttonState, setButtonState] = useState(0); // 0-> Home, 1->all-published-lists, 2-> user-lists, 3-> community-lists
 
     useEffect(() => {
-        store.loadIdNamePairs();
+        store.loadIdNamePairsByState(store.buttonState);
     }, []);
 
     function handleCreateNewList() {
         store.createNewList();
     }
 
-    function handleHome(event) {
-        console.log("CLICKING");
-    }
-
     function changeButtonState(event) {
         setButtonState(event.currentTarget.value);
+        console.log(store.buttonState);
     }
 
     let listCard = "";
-
-    switch (buttonState) {
-        case 0: // HOME SO LOAD ID PAIRS NORMALLY
-            
-            break;
-        case 1: // ALL-LISTS-> Only SHOW PUBLISHED LISTS
-            
-            break;
-        case 2: // USER-LISTS -> ONLY SHOW USER's PUBLISHED LISTS
-            
-            break;
-        case 3: // COMMUNITY-LISTS -> SHOW COMMUNITY LISTS
-            
-            break;
-        default:
-            break;
-    }
 
     if (store) {
         listCard = 
@@ -82,7 +64,7 @@ const HomeScreen = () => {
             <div id="top5-list-selector">
                     <Grid container spacing={6} paddingLeft={10}>
                         <Grid item xs={10}>
-                            <IconButton value={0} aria-label="home" onClick={changeButtonState}> <HomeOutlinedIcon fontSize="large" /> </IconButton>
+                            <IconButton value={0} aria-label="home" onClick={changeButtonState} disabled={auth.user.username === "Guest"}> <HomeOutlinedIcon fontSize="large" /> </IconButton>
                             <IconButton value={1} aria-label="all-lists" onClick={changeButtonState}> <GroupsOutlinedIcon fontSize="large" /></IconButton> 
                             <IconButton value={2} aria-label="user-lists" onClick={changeButtonState}><PersonOutlineOutlinedIcon fontSize="large" /></IconButton>
                             <IconButton value={3} aria-label="community-lists" onClick={changeButtonState}>
@@ -108,17 +90,18 @@ const HomeScreen = () => {
                 </div>
             </div>
             
-            <div id="list-selector-heading">
+            <div id="list-selector-heading" >
             <Fab 
                 color="primary" 
                 aria-label="add"
                 id="add-list-button"
                 onClick={handleCreateNewList}
                 style={{pointerEvents: "all"}}
+                disabled={auth.user.username === "Guest"}
             >
                 <AddIcon />
             </Fab>
-                <Typography variant="h2">Your Lists</Typography>
+                <Typography variant="h2" >Your Lists</Typography>
             </div>
 
         </div>

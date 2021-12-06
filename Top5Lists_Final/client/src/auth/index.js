@@ -126,6 +126,17 @@ function AuthContextProvider(props) {
         }
     }
 
+    auth.setGuestAccount = function() {
+        let user = {email: "Guest", firstName: "Guest", lastName: "Guest", username: "Guest"};
+        authReducer({
+            type: AuthActionType.LOGIN_USER,
+            payload: {
+                user: user
+            }
+        })
+        history.push("/");
+    }
+
     return (
         <AuthContext.Provider value={{
             auth
