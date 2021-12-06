@@ -48,7 +48,6 @@ function ListCard(props) {
     const { idNamePair, selected } = props;
     const [expanded, setExpanded] = useState(false);
 
-
     const handleExpandClick = () => {
         setExpanded(!expanded);
         if (!expanded)
@@ -118,11 +117,10 @@ function ListCard(props) {
     }
 
     let status =
-        <IconButton type="text" aria-label="list-status">
-            <Box sx={{ p: 1, flexGrow: 1 }}
-                onClick={(event) => {
-                    handleLoadList(event, idNamePair._id)
-                }}>
+        <IconButton type="text" aria-label="list-status" onClick={(event) => {
+            handleLoadList(event, idNamePair._id)
+        }}>
+            <Box sx={{ p: 1, flexGrow: 1 }}>
                     <Typography variant="h6" style={{color: "red"}}>Edit</Typography>
             </Box>
         </IconButton>

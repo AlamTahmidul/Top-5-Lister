@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 import ListCard from './ListCard.js'
 import MUIDeleteModal from './MUIDeleteModal'
@@ -25,6 +25,8 @@ import { ReactComponent as Logo } from './../common/images/sum.svg'
 const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
 
+    const [buttonState, setButtonState] = useState(0); // 0-> Home, 1->all-published-lists, 2-> user-lists, 3-> community-lists
+
     useEffect(() => {
         store.loadIdNamePairs();
     }, []);
@@ -37,7 +39,29 @@ const HomeScreen = () => {
         console.log("CLICKING");
     }
 
+    function changeButtonState(event) {
+        setButtonState(event.currentTarget.value);
+    }
+
     let listCard = "";
+
+    switch (buttonState) {
+        case 0: // HOME SO LOAD ID PAIRS NORMALLY
+            
+            break;
+        case 1: // ALL-LISTS-> Only SHOW PUBLISHED LISTS
+            
+            break;
+        case 2: // USER-LISTS -> ONLY SHOW USER's PUBLISHED LISTS
+            
+            break;
+        case 3: // COMMUNITY-LISTS -> SHOW COMMUNITY LISTS
+            
+            break;
+        default:
+            break;
+    }
+
     if (store) {
         listCard = 
             <List sx={{ width: '90%', left: '5%', bgcolor: 'background.paper' }}>
@@ -58,10 +82,10 @@ const HomeScreen = () => {
             <div id="top5-list-selector">
                     <Grid container spacing={6} paddingLeft={10}>
                         <Grid item xs={10}>
-                            <IconButton aria-label="home" onClick={handleHome}> <HomeOutlinedIcon fontSize="large" /> </IconButton>
-                            <IconButton aria-label="all-lists"> <GroupsOutlinedIcon fontSize="large" /></IconButton> 
-                            <IconButton aria-label="user-lists"><PersonOutlineOutlinedIcon fontSize="large" /></IconButton>
-                            <IconButton aria-label="community-lists">
+                            <IconButton value={0} aria-label="home" onClick={changeButtonState}> <HomeOutlinedIcon fontSize="large" /> </IconButton>
+                            <IconButton value={1} aria-label="all-lists" onClick={changeButtonState}> <GroupsOutlinedIcon fontSize="large" /></IconButton> 
+                            <IconButton value={2} aria-label="user-lists" onClick={changeButtonState}><PersonOutlineOutlinedIcon fontSize="large" /></IconButton>
+                            <IconButton value={3} aria-label="community-lists" onClick={changeButtonState}>
                                 <SvgIcon>
                                     <Logo />
                                 </SvgIcon>
