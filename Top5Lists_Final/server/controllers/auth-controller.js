@@ -9,7 +9,7 @@ getLoggedIn = async (req, res) => {
             return res.status(200).json({
                 loggedIn: false,
                 user: null,
-                errorMessage: "?"
+                errorMessage: "Guest"
             })
         }
 
@@ -76,10 +76,10 @@ loginUser = async (req, res) => {
             user: {
                 firstName: existingUser.firstName,
                 lastName: existingUser.lastName,
-                username: existingUser.userName,  
-                email: existingUser.email              
+                username: existingUser.username,  
+                email: existingUser.email
             }
-        })
+        }).send();
 
     } catch (err) {
         console.error(err);

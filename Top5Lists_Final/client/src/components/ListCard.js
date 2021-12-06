@@ -6,7 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 import ListItem from '@mui/material/ListItem';
 import TextField from '@mui/material/TextField';
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
@@ -40,6 +40,7 @@ const ExpandMore = styled((props) => {
 
 function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
+
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
     const { idNamePair, selected } = props;
@@ -104,31 +105,48 @@ function ListCard(props) {
         cardStatus = true;
     }
 
+    let status = <Typography variant="h6" style={{color: "red"}}>Edit</Typography>;
+    if (idNamePair.isPublished) {
+        status = <Typography variant="h6" style={{color: "green"}}>Published</Typography>;
+    }
+
     let cardElement =
     <Card>
         <CardContent>
             <Grid container spacing={12}>
                 <Grid item xs={8}>
-                    <Grid container spacing={3} direction="column">
+                    <Grid container direction="column">
                         <Grid item xs={2}>
-                            <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
+                            <Box sx={{ p: 1, flexGrow: 1 }} style={{fontSize: 36}}>{idNamePair.name}</Box>
                         </Grid>
                         <Grid item xs={2}>
-                            Author
-                        </Grid>
-                        <Grid item xs={2}>
-                            Status
+                            <Box sx={{ p: 1, flexGrow: 1 }}>By: {idNamePair.username}</Box>
                         </Grid>
                     </Grid>
+                    <Box sx={{ p: 1, flexGrow: 1 }}>{status}</Box>
                 </Grid>
 
                 <Grid item xs={4}>
-                    <IconButton>
-                        <ThumbUpOffAltOutlinedIcon fontSize="large" />
-                    </IconButton>
-                    <IconButton>
-                        <ThumbDownOffAltOutlinedIcon fontSize="large" />
-                    </IconButton>
+                    <Grid container spacing={4} direction="column">
+                        <Grid item xs={2}>
+                            <IconButton>
+                                <ThumbUpOffAltOutlinedIcon fontSize="large" />
+                                <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.likes.length}</Box>
+                            </IconButton>
+                            <IconButton>
+                                <ThumbDownOffAltOutlinedIcon fontSize="large" />
+                                <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.dislikes.length}</Box>
+                            </IconButton>
+                            <IconButton onClick={(event) => {
+                                handleDeleteList(event, idNamePair._id)
+                            }} aria-label='delete'>
+                                <DeleteOutlinedIcon fontSize="large" />
+                            </IconButton>
+                        </Grid>
+                        <Grid item xs={2}>
+                            <Box sx={{ p: 1, flexGrow: 1 }}>Views: {idNamePair.views}</Box>
+                        </Grid>
+                    </Grid>
                 </Grid>
 
             </Grid>

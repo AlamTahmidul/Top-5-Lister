@@ -12,6 +12,7 @@ import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import FilterListOutlinedIcon from '@mui/icons-material/FilterListOutlined';
+
 import { Grid, IconButton, SvgIcon } from '@mui/material';
 
 import { ReactComponent as Logo } from './../common/images/sum.svg'
@@ -31,6 +32,11 @@ const HomeScreen = () => {
     function handleCreateNewList() {
         store.createNewList();
     }
+
+    function handleHome(event) {
+        console.log("CLICKING");
+    }
+
     let listCard = "";
     if (store) {
         listCard = 
@@ -48,48 +54,47 @@ const HomeScreen = () => {
     }
     
     return (
-        <div id="top5-list-selector">
-            <div id="button-icons">
-                <Grid container spacing={6} paddingLeft={10}>
-                    <Grid item xs={10}>
-                        <IconButton aria-label="home"> <HomeOutlinedIcon fontSize="large" /> </IconButton>
-                        <IconButton aria-label="all-lists"> <GroupsOutlinedIcon fontSize="large" /></IconButton> 
-                        <IconButton aria-label="user-lists"><PersonOutlineOutlinedIcon fontSize="large" /></IconButton>
-                        <IconButton aria-label="community-lists">
-                            <SvgIcon>
-                                <Logo />
-                            </SvgIcon>
-                        </IconButton>
-                        {/* TODO: Search Bar */}
+        <div>
+            <div id="top5-list-selector">
+                    <Grid container spacing={6} paddingLeft={10}>
+                        <Grid item xs={10}>
+                            <IconButton aria-label="home" onClick={handleHome}> <HomeOutlinedIcon fontSize="large" /> </IconButton>
+                            <IconButton aria-label="all-lists"> <GroupsOutlinedIcon fontSize="large" /></IconButton> 
+                            <IconButton aria-label="user-lists"><PersonOutlineOutlinedIcon fontSize="large" /></IconButton>
+                            <IconButton aria-label="community-lists">
+                                <SvgIcon>
+                                    <Logo />
+                                </SvgIcon>
+                            </IconButton>
+                            {/* TODO: Search Bar */}
+                        </Grid>
+                        <Grid item xs={2}>
+                            <IconButton>
+                                <Typography disabled>SORT BY</Typography>
+                                <FilterListOutlinedIcon fontSize="large"/>
+                            </IconButton>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={2}>
-                        <IconButton>
-                            <Typography disabled>SORT BY</Typography>
-                            <FilterListOutlinedIcon fontSize="large"/>
-                        </IconButton>
-                    </Grid>
-                </Grid>
-            </div>
 
-            <div id="list-selector-list">
-                {
-                    listCard
-                }
-                <MUIDeleteModal />
+                <div id="list-selector-list">
+                    {
+                        listCard
+                    }
+                    <MUIDeleteModal />
+                </div>
             </div>
-
-            {/* <div id="list-selector-heading">
-            <Fab 
-                color="primary" 
-                aria-label="add"
-                id="add-list-button"
-                onClick={handleCreateNewList}
-                // style={{bottom: 20}}
-            >
-                <AddIcon />
-            </Fab>
-                <Typography variant="h2">Your Lists</Typography>
-            </div> */}
+            
+            <div id="list-selector-heading">
+                <Fab 
+                    aria-label="add"
+                    id="add-list-button"
+                    style={{background: 'transparent'}}
+                    onClick={handleCreateNewList}
+                >
+                    <AddIcon fontSize='large' />
+                </Fab>
+                    <Typography variant="h2">Your Lists</Typography>
+            </div>
         </div>
         )
 }

@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import AuthContext from '../auth'
 import Copyright from './Copyright'
 
@@ -12,9 +12,35 @@ import Link from '@mui/material/Link';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { Modal, IconButton, Alert, AlertTitle } from '@mui/material';
+import Close from '@mui/icons-material/Close'
+
+const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 'auto',
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
+
+const closeIconStyle = {
+    position: 'absolute',
+    right: '0%',
+    top: '0%',
+}
+
 
 export default function RegisterScreen() {
     const { auth } = useContext(AuthContext);
+    
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+    const [errText, setErrText] = useState("");
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -28,12 +54,32 @@ export default function RegisterScreen() {
             formData.get('passwordVerify')
         ).catch((err) => {
             console.log(err.response.data); // Gets Error Message for Stuff
+            setErrText(err.response.data.errorMessage);
+            handleOpen();
         });
     };
 
     return (
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
+                <div>
+                    <Modal
+                        open={open}
+                        onClose={handleClose}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                    >
+                        <Box sx={modalStyle}>
+                            <IconButton style={closeIconStyle} onClick={handleClose}>
+                                <Close />
+                            </IconButton>
+                            <Alert severity="error">
+                                <AlertTitle>Error</AlertTitle>
+                                <strong>{errText}</strong>
+                            </Alert>
+                        </Box>
+                    </Modal>
+                </div>
                 <Box
                     sx={{
                         marginTop: 8,

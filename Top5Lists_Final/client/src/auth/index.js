@@ -78,13 +78,15 @@ function AuthContextProvider(props) {
                     user: response.data.user
                 }
             })
-            history.push("/login");
+            history.push("/");
         }
     }
 
     auth.loginUser = async function(email, password) {
         const response = await api.loginUser(email, password);
         if (response.status === 200) {
+            console.log("IN LOGIN USER: ");
+            console.log(response.data.user);
             authReducer({
                 type: AuthActionType.LOGIN_USER,
                 payload: {
@@ -114,6 +116,14 @@ function AuthContextProvider(props) {
         }
         console.log("user initials: " + initials);
         return initials;
+    }
+
+    auth.getUsername = function() {
+        if (auth.user) {
+            return auth.user.username;
+        } else {
+            return "Guest";
+        }
     }
 
     return (

@@ -6,23 +6,43 @@ import Copyright from './Copyright'
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { Container } from '@mui/material';
+import { Container, Modal, Alert, AlertTitle, IconButton } from '@mui/material';
+import Close from '@mui/icons-material/Close'
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const theme = createTheme();
 
+const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 'auto',
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
+
+const closeIconStyle = {
+    position: 'absolute',
+    right: '0%',
+    top: '0%',
+}
+
 export default function LoginScreen() {
     const { auth } = useContext(AuthContext);
-
+    
     const [errText, setErrText] = useState("");
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -32,6 +52,8 @@ export default function LoginScreen() {
             formData.get('password')
         ).catch((err) => {
             console.log(err.response.data); // Gets the Error
+            setErrText(err.response.data.errorMessage);
+            handleOpen();
         });
 
     };
@@ -39,6 +61,24 @@ export default function LoginScreen() {
     return (
         <ThemeProvider theme={theme}>
             <Container component="main" >
+                <div>
+                    <Modal
+                        open={open}
+                        onClose={handleClose}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                    >
+                        <Box sx={modalStyle}>
+                            <IconButton style={closeIconStyle} onClick={handleClose}>
+                                <Close />
+                            </IconButton>
+                            <Alert severity="error">
+                                <AlertTitle>Error</AlertTitle>
+                                <strong>{errText}</strong>
+                            </Alert>
+                        </Box>
+                    </Modal>
+                </div>
                     <Box
                         sx={{
                             my: 8,
