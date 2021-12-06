@@ -27,7 +27,8 @@ export const GlobalStoreActionType = {
     UNMARK_LIST_FOR_DELETION: "UNMARK_LIST_FOR_DELETION",
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
     SET_ITEM_EDIT_ACTIVE: "SET_ITEM_EDIT_ACTIVE",
-    SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE"
+    SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
+    SET_OPENED_LISTS: "SET_OPENED_LISTS"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -43,7 +44,8 @@ function GlobalStoreContextProvider(props) {
         newListCounter: 0,
         listNameActive: false,
         itemActive: false,
-        listMarkedForDeletion: null
+        listMarkedForDeletion: null,
+        currentlyOpenedLists: []
     });
     const history = useHistory();
 
@@ -66,7 +68,8 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    currentlyOpenedLists: store.currentlyOpenedLists
                 });
             }
             // STOP EDITING THE CURRENT LIST
@@ -77,7 +80,8 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    currentlyOpenedLists: store.currentlyOpenedLists
                 })
             }
             // CREATE A NEW LIST
@@ -88,7 +92,8 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter + 1,
                     isListNameEditActive: false,
                     isItemEditActive: false,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    currentlyOpenedLists: store.currentlyOpenedLists
                 })
             }
             // GET ALL THE LISTS SO WE CAN PRESENT THEM
@@ -99,7 +104,8 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    currentlyOpenedLists: []
                 });
             }
             // PREPARE TO DELETE A LIST
@@ -110,7 +116,8 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
-                    listMarkedForDeletion: payload
+                    listMarkedForDeletion: payload,
+                    currentlyOpenedLists: store.currentlyOpenedLists
                 });
             }
             // PREPARE TO DELETE A LIST
@@ -121,7 +128,8 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    currentlyOpenedLists: store.currentlyOpenedLists
                 });
             }
             // UPDATE A LIST
@@ -132,7 +140,8 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    currentlyOpenedLists: store.currentlyOpenedLists
                 });
             }
             // START EDITING A LIST ITEM
@@ -143,7 +152,8 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: true,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    currentlyOpenedLists: store.currentlyOpenedLists
                 });
             }
             // START EDITING A LIST NAME
@@ -154,7 +164,20 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter,
                     isListNameEditActive: true,
                     isItemEditActive: false,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    currentlyOpenedLists: store.currentlyOpenedLists
+                });
+            }
+            // UPDATE OPENED LISTS
+            case GlobalStoreActionType.SET_OPENED_LISTS: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    newListCounter: store.newListCounter,
+                    isListNameEditActive: false,
+                    isItemEditActive: false,
+                    listMarkedForDeletion: store.listMarkedForDeletion,
+                    currentlyOpenedLists: payload
                 });
             }
             default:
@@ -346,6 +369,35 @@ function GlobalStoreContextProvider(props) {
                 payload: store.currentList
             });
         }
+    }
+
+    store.addOpenedList = async function (id) {
+        const response = await api.getTop5ListById(id);
+        if (response.status === 200) {
+            console.log(store.currentlyOpenedLists);
+            store.currentlyOpenedLists.push(response.data.top5List);
+            storeReducer({
+                type: GlobalStoreActionType.SET_OPENED_LISTS,
+                payload: store.currentlyOpenedLists
+            });
+        }
+    }
+
+    store.unAddOpenedList = async function (id) {
+        // console.log("UNADD");
+        for (let l in store.currentlyOpenedLists) {
+            if (store.currentlyOpenedLists[l]._id === id) {
+                let x = store.currentlyOpenedLists.splice(l, 1);
+                // console.log("MATCH");
+                // console.log(x);
+                storeReducer({
+                    type: GlobalStoreActionType.SET_OPENED_LISTS,
+                    payload: store.currentlyOpenedLists
+                });
+                break;
+            }
+        }
+        // console.log(store.currentlyOpenedLists);
     }
 
     // THIS FUNCTION ENABLES THE PROCESS OF EDITING A LIST NAME

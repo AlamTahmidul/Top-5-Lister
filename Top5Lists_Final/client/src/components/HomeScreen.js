@@ -85,16 +85,18 @@ const HomeScreen = () => {
             </div>
             
             <div id="list-selector-heading">
-                <Fab 
-                    aria-label="add"
-                    id="add-list-button"
-                    style={{background: 'transparent'}}
-                    onClick={handleCreateNewList}
-                >
-                    <AddIcon fontSize='large' />
-                </Fab>
-                    <Typography variant="h2">Your Lists</Typography>
+            <Fab 
+                color="primary" 
+                aria-label="add"
+                id="add-list-button"
+                onClick={handleCreateNewList}
+                style={{pointerEvents: "all"}}
+            >
+                <AddIcon />
+            </Fab>
+                <Typography variant="h2">Your Lists</Typography>
             </div>
+
         </div>
         )
 }

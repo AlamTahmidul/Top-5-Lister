@@ -103,13 +103,17 @@ body {
   background-color: #c4c4c4;
 }
 
+#comments {
+  background-color: green;
+}
+
 #top5-workspace {
   position: absolute;
   left: 0%;
   top: 10%;
-  width: 100%;
+  width: 50%;
   height: 80%;
-  background-color: var(--swatch-accent);
+  background-color: "green";
 }
 
 #top5-statusbar {
@@ -137,6 +141,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: none;
 }
 
 #add-list-button {
@@ -209,6 +214,10 @@ body {
   background-color: var(--swatch-status);
 }
 
+#edit-numbering-view {
+  background-color: #2c2f70;
+}
+
 #edit-items {
   position: absolute;
   left: 20%;
@@ -236,6 +245,16 @@ body {
   color: black;
 }
 
+.item-number-view {
+  display: flex;
+  align-items: center;
+  font-size: 48pt;
+  height: 20%;
+  justify-content: center;
+  width: 100%;
+  color: #d4af37;
+}
+
 input {
   font-size: 20pt;
 }
@@ -251,6 +270,45 @@ input {
 }
 .top5-item-dragged-to {
   background-color: var(--swatch-accent);
+}
+
+.original-view {
+  background-color: #fffff1 !important;
+}
+
+.published-view {
+  background-color: #eaeaf5 !important;
+}
+
+.fab-add-text {
+  left: 10%;
+}
+
+.fab-main {
+  position: absolute;
+  left: 0%;
+  top: 75%;
+  width: 50%;
+  height: 10%;
+}
+
+.top5-item-view {
+  /* text-align: left;
+  width: 100%;
+  padding-left: 5%;
+  display: flex;
+  align-items: left;
+  font-size: 48px;
+  height: 20%;
+  color: #d4af37; */
+  display: flex;
+  align-items: center;
+  font-size: 48pt;
+  height: 20%;
+  justify-content: center;
+  width: 100%;
+  color: #d4af37;
+  
 }
 
 .disabled {

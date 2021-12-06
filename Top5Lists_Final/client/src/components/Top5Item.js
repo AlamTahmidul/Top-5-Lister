@@ -5,6 +5,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 import ListItem from '@mui/material/ListItem';
 import TextField from '@mui/material/TextField';
+import { Typography } from "@mui/material";
 /*
     This React component represents a single item in our
     Top 5 List, which can be edited or moved around.
@@ -16,38 +17,6 @@ function Top5Item(props) {
     const [editActive, setEditActive] = useState(false);
     const [draggedTo, setDraggedTo] = useState(0);
     const [text, setText] = useState("");
-
-    function handleDragStart(event, targetId) {
-        event.dataTransfer.setData("item", targetId);
-    }
-
-    function handleDragOver(event) {
-        event.preventDefault();
-    }
-
-    function handleDragEnter(event) {
-        event.preventDefault();
-        console.log("entering");
-        setDraggedTo(true);
-    }
-
-    function handleDragLeave(event) {
-        event.preventDefault();
-        console.log("leaving");
-        setDraggedTo(false);
-    }
-
-    function handleDrop(event, targetId) {
-        event.preventDefault();
-        let sourceId = event.dataTransfer.getData("item");
-        sourceId = sourceId.substring(sourceId.indexOf("-") + 1);
-        setDraggedTo(false);
-
-        console.log("handleDrop (sourceId, targetId): ( " + sourceId + ", " + targetId + ")");
-
-        // UPDATE THE LIST
-        store.addMoveItemTransaction(sourceId, targetId);
-    }
 
     function handleKeyPress(event) {
         if (event.code === "Enter") {
@@ -81,43 +50,18 @@ function Top5Item(props) {
     }
     let { index } = props;
 
-    let itemClass = "top5-item";
-    if (draggedTo) {
-        itemClass = "top5-item-dragged-to";
-    }
-
     let cardElement =
             <ListItem
                 id={'item-' + (index+1)}
-                className={itemClass}
-                onDragStart={(event) => {
-                    handleDragStart(event, (index+1))
-                }}
-                onDragOver={(event) => {
-                    handleDragOver(event, (index+1))
-                }}
-                onDragEnter={(event) => {
-                    handleDragEnter(event, (index+1))
-                }}
-                onDragLeave={(event) => {
-                    handleDragLeave(event, (index+1))
-                }}
-                onDrop={(event) => {
-                    handleDrop(event, (index+1))
-                }}
-                draggable="true"
+                className={"top5-item-view"}
                 sx={{ display: 'flex', p: 1 }}
-                style={{ width: '100%' }}
-                style={{
-                    fontSize: '48pt'
-                }}
             >
-            <Box sx={{ p: 1 }}>
+            {/* <Box sx={{ p: 1 }}>
                 <IconButton onClick={handleToggleEdit} aria-label='edit'>
                     <EditIcon style={{fontSize:'48pt'}}  />
                 </IconButton>
-            </Box>
-                <Box sx={{ p: 1, flexGrow: 1 }}>{props.text}</Box>
+            </Box> */}
+                <Typography variant="h3">{props.text}</Typography>
             </ListItem>
 
     if (editActive) {
