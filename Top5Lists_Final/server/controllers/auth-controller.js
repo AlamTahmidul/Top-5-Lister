@@ -21,7 +21,8 @@ getLoggedIn = async (req, res) => {
             user: {
                 firstName: loggedInUser.firstName,
                 lastName: loggedInUser.lastName,
-                email: loggedInUser.email
+                email: loggedInUser.email,
+                userName: loggedInUser.username
             }
         })
     } catch (err) {
@@ -41,13 +42,13 @@ loginUser = async (req, res) => {
                 .json({ errorMessage: "Please enter all required fields." });
         }
 
-        const existingUser = await User.findOne({ email: email });
+        const existingUser = await User.findOne({ $or: [{email: email}, {username: email}] });
         console.log("existingUser: " + existingUser);
         if (!existingUser) {
             return res
                 .status(401)
                 .json({
-                    errorMessage: "Wrong email or password provided."
+                    errorMessage: "Wrong username/email or password provided."
                 })
         }
 
@@ -74,7 +75,8 @@ loginUser = async (req, res) => {
             success: true,
             user: {
                 firstName: existingUser.firstName,
-                lastName: existingUser.lastName,  
+                lastName: existingUser.lastName,
+                username: existingUser.userName,  
                 email: existingUser.email              
             }
         })
@@ -96,9 +98,10 @@ logoutUser = async (req, res) => {
 
 registerUser = async (req, res) => {
     try {
-        const { firstName, lastName, email, password, passwordVerify } = req.body;
-        console.log("create user: " + firstName + " " + lastName + " " + email + " " + password + " " + passwordVerify);
-        if (!firstName || !lastName || !email || !password || !passwordVerify) {
+        const { firstName, lastName, username, email, password, passwordVerify } = req.body;
+        console.log(req.body);
+        console.log("create user: " + firstName + " " + lastName + " " + username + " " + email + " " + password + " " + passwordVerify);
+        if (!firstName || !lastName || !email || !password || !passwordVerify || !username) {
             return res
                 .status(400)
                 .json({ errorMessage: "Please enter all required fields." });
@@ -120,14 +123,15 @@ registerUser = async (req, res) => {
                 })
         }
         console.log("password and password verify match");
-        const existingUser = await User.findOne({ email: email });
+
+        const existingUser = await User.findOne({ $or: [{email: email}, {username: username}] });
         console.log("existingUser: " + existingUser);
         if (existingUser) {
             return res
                 .status(400)
                 .json({
                     success: false,
-                    errorMessage: "An account with this email address already exists."
+                    errorMessage: "An account with this username/email already exists."
                 })
         }
 
@@ -137,7 +141,7 @@ registerUser = async (req, res) => {
         console.log("passwordHash: " + passwordHash);
 
         const newUser = new User({
-            firstName, lastName, email, passwordHash
+            firstName, lastName, username, email, passwordHash
         });
         const savedUser = await newUser.save();
         console.log("new user saved: " + savedUser._id);
@@ -154,8 +158,9 @@ registerUser = async (req, res) => {
             success: true,
             user: {
                 firstName: savedUser.firstName,
-                lastName: savedUser.lastName,  
-                email: savedUser.email              
+                lastName: savedUser.lastName,
+                username: savedUser.username,
+                email: savedUser.email       
             }
         })
 

@@ -13,8 +13,10 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Collapse from '@mui/material/Collapse';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import KeyboardDoubleArrowDownRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowDownRounded';
+import ThumbUpOffAltOutlinedIcon from '@mui/icons-material/ThumbUpOffAltOutlined';
+import ThumbDownOffAltOutlinedIcon from '@mui/icons-material/ThumbDownOffAltOutlined';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
 
 /*
@@ -72,6 +74,7 @@ function ListCard(props) {
             store.setIsListNameEditActive();
         }
         setEditActive(newActive);
+        setText(idNamePair.name);
     }
 
     async function handleDeleteList(event, id) {
@@ -104,70 +107,63 @@ function ListCard(props) {
     let cardElement =
     <Card>
         <CardContent>
-            <Grid>
-                Wassup
+            <Grid container spacing={12}>
+                <Grid item xs={8}>
+                    <Grid container spacing={3} direction="column">
+                        <Grid item xs={2}>
+                            <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
+                        </Grid>
+                        <Grid item xs={2}>
+                            Author
+                        </Grid>
+                        <Grid item xs={2}>
+                            Status
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+                <Grid item xs={4}>
+                    <IconButton>
+                        <ThumbUpOffAltOutlinedIcon fontSize="large" />
+                    </IconButton>
+                    <IconButton>
+                        <ThumbDownOffAltOutlinedIcon fontSize="large" />
+                    </IconButton>
+                </Grid>
+
             </Grid>
-            {/* <ListItem
-                id={idNamePair._id}
-                key={idNamePair._id}
-                sx={{ marginTop: '15px', display: 'flex', p: 1 }}
-                style={{ width: '100%', fontSize: '48pt' }}
-                button
-                onClick={(event) => {
-                    handleLoadList(event, idNamePair._id)
-                }
-                }
-                style={{
-                    fontSize: '48pt'
-                }}
-            >
-                    <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
-                    <Box sx={{ p: 1 }}>
-                        <IconButton onClick={handleToggleEdit} aria-label='edit'>
-                            <EditIcon style={{fontSize:'48pt'}} />
-                        </IconButton>
-                    </Box>
-                    <Box sx={{ p: 1 }}>
-                        <IconButton onClick={(event) => {
-                            handleDeleteList(event, idNamePair._id)
-                        }} aria-label='delete'>
-                            <DeleteIcon style={{fontSize:'48pt'}} />
-                        </IconButton>
-                    </Box>
-            </ListItem> */}
         </CardContent>
 
         <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent>
-            <ListItem
-                id={idNamePair._id}
-                key={idNamePair._id}
-                sx={{ marginTop: '15px', display: 'flex', p: 1 }}
-                style={{ width: '100%' }}
-                button
-                onClick={(event) => {
-                    handleLoadList(event, idNamePair._id)
-                }
-                }
-                style={{
-                    fontSize: '48pt'
-                }}
-            >
-                    <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
-                    <Box sx={{ p: 1 }}>
-                        <IconButton onClick={handleToggleEdit} aria-label='edit'>
-                            <EditIcon style={{fontSize:'48pt'}} />
-                        </IconButton>
-                    </Box>
-                    <Box sx={{ p: 1 }}>
-                        <IconButton onClick={(event) => {
-                            handleDeleteList(event, idNamePair._id)
-                        }} aria-label='delete'>
-                            <DeleteIcon style={{fontSize:'48pt'}} />
-                        </IconButton>
-                    </Box>
-            </ListItem>
-        </CardContent>
+            <CardContent>
+                <ListItem
+                    id={idNamePair._id}
+                    key={idNamePair._id}
+                    sx={{ marginTop: '15px', display: 'flex', p: 1 }}
+                    style={{ width: '100%' }}
+                    button
+                    onClick={(event) => {
+                        handleLoadList(event, idNamePair._id)
+                    }
+                    }
+                    style={{
+                        fontSize: '48pt'
+                    }}
+                >
+                        <Box sx={{ p: 1 }}>
+                            <IconButton onClick={handleToggleEdit} aria-label='edit'>
+                                <EditIcon style={{fontSize:'48pt'}} />
+                            </IconButton>
+                        </Box>
+                        <Box sx={{ p: 1 }}>
+                            <IconButton onClick={(event) => {
+                                handleDeleteList(event, idNamePair._id)
+                            }} aria-label='delete'>
+                                <DeleteIcon style={{fontSize:'48pt'}} />
+                            </IconButton>
+                        </Box>
+                </ListItem>
+            </CardContent>
         </Collapse>
         
         <CardActions disableSpacing>

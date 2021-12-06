@@ -7,6 +7,15 @@ import AddIcon from '@mui/icons-material/Add';
 import Fab from '@mui/material/Fab'
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography'
+
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import FilterListOutlinedIcon from '@mui/icons-material/FilterListOutlined';
+import { Grid, IconButton, SvgIcon } from '@mui/material';
+
+import { ReactComponent as Logo } from './../common/images/sum.svg'
+
 /*
     This React component lists all the top5 lists in the UI.
     
@@ -40,6 +49,28 @@ const HomeScreen = () => {
     
     return (
         <div id="top5-list-selector">
+            <div id="button-icons">
+                <Grid container spacing={6} paddingLeft={10}>
+                    <Grid item xs={10}>
+                        <IconButton aria-label="home"> <HomeOutlinedIcon fontSize="large" /> </IconButton>
+                        <IconButton aria-label="all-lists"> <GroupsOutlinedIcon fontSize="large" /></IconButton> 
+                        <IconButton aria-label="user-lists"><PersonOutlineOutlinedIcon fontSize="large" /></IconButton>
+                        <IconButton aria-label="community-lists">
+                            <SvgIcon>
+                                <Logo />
+                            </SvgIcon>
+                        </IconButton>
+                        {/* TODO: Search Bar */}
+                    </Grid>
+                    <Grid item xs={2}>
+                        <IconButton>
+                            <Typography disabled>SORT BY</Typography>
+                            <FilterListOutlinedIcon fontSize="large"/>
+                        </IconButton>
+                    </Grid>
+                </Grid>
+            </div>
+
             <div id="list-selector-list">
                 {
                     listCard
@@ -47,7 +78,7 @@ const HomeScreen = () => {
                 <MUIDeleteModal />
             </div>
 
-            <div id="list-selector-heading">
+            {/* <div id="list-selector-heading">
             <Fab 
                 color="primary" 
                 aria-label="add"
@@ -58,7 +89,7 @@ const HomeScreen = () => {
                 <AddIcon />
             </Fab>
                 <Typography variant="h2">Your Lists</Typography>
-            </div>
+            </div> */}
         </div>
         )
 }
