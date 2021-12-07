@@ -15,6 +15,7 @@ import { Container, Modal, Alert, AlertTitle, IconButton } from '@mui/material';
 import Close from '@mui/icons-material/Close'
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import GlobalStoreContext from '../store';
 
 const theme = createTheme();
 
@@ -37,6 +38,7 @@ const closeIconStyle = {
 }
 
 export default function LoginScreen() {
+    const {store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
     
     const [errText, setErrText] = useState("");
@@ -50,7 +52,10 @@ export default function LoginScreen() {
         auth.loginUser(
             formData.get('email'),
             formData.get('password')
-        ).catch((err) => {
+        ).then(() => {
+            store.setButtonStateFrom('0');
+
+        }).catch((err) => {
             console.log(err.response.data); // Gets the Error
             setErrText(err.response.data.errorMessage);
             handleOpen();

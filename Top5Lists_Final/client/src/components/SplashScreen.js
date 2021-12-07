@@ -13,7 +13,7 @@ export default function SplashScreen() {
 
     function handleGuest() {
         auth.setGuestAccount();
-        store.setButtonStateFrom(1);
+        store.setButtonStateFrom('1');
     }
 
     return (
