@@ -1,0 +1,53 @@
+[{
+  "_id": {
+    "$oid": "61aea450abead45cc43ea1c6"
+  },
+  "items": [
+    "Item 1",
+    "Item 2",
+    "Item 3",
+    "Item 4",
+    "Item 5"
+  ],
+  "likes": [],
+  "dislikes": [],
+  "name": "New List",
+  "ownerEmail": "e@email.com",
+  "username": "jdoe1234",
+  "views": 7,
+  "isPublished": true,
+  "comments": [],
+  "createdAt": {
+    "$date": "2021-12-07T00:01:20.665Z"
+  },
+  "updatedAt": {
+    "$date": "2021-12-07T03:00:47.517Z"
+  },
+  "__v": 5
+},{
+  "_id": {
+    "$oid": "61aeba58c3ebc20b3407cb63"
+  },
+  "items": [
+    "?",
+    "?",
+    "?",
+    "?",
+    "?"
+  ],
+  "likes": [],
+  "dislikes": [],
+  "name": "U",
+  "ownerEmail": "e@email.com",
+  "username": "jdoe1234",
+  "views": 2,
+  "isPublished": false,
+  "comments": [],
+  "createdAt": {
+    "$date": "2021-12-07T01:35:20.020Z"
+  },
+  "updatedAt": {
+    "$date": "2021-12-07T03:00:50.203Z"
+  },
+  "__v": 0
+}]

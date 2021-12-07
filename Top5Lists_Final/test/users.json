@@ -1,0 +1,111 @@
+[{
+  "_id": {
+    "$oid": "61ad6de20e1d674a04f7eee8"
+  },
+  "top5Lists": [
+    {
+      "$oid": "61ad77583a4b5b51a01f54c4"
+    },
+    {
+      "$oid": "61ad849fc03ee8343051303b"
+    },
+    {
+      "$oid": "61ad9c4e1b949b6eb0f0926f"
+    },
+    {
+      "$oid": "61ad9c8b1b949b6eb0f09287"
+    },
+    {
+      "$oid": "61ad9db6b6ee7250409aa36b"
+    },
+    {
+      "$oid": "61ad9e4476b47e62384da8db"
+    },
+    {
+      "$oid": "61ada2b84beb3c56f4da6daf"
+    },
+    {
+      "$oid": "61ada4624beb3c56f4da6de8"
+    },
+    {
+      "$oid": "61ada5285fee9a3dfc1e9d61"
+    },
+    {
+      "$oid": "61ada5345fee9a3dfc1e9d6a"
+    },
+    {
+      "$oid": "61ada8a3c785f03374537960"
+    },
+    {
+      "$oid": "61adabe1c785f03374537980"
+    },
+    {
+      "$oid": "61ae50a73403f83f3c85ac7f"
+    },
+    {
+      "$oid": "61ae56763403f83f3c85ad6c"
+    },
+    {
+      "$oid": "61ae80dfcb4606478861ad93"
+    },
+    {
+      "$oid": "61aea450abead45cc43ea1c6"
+    },
+    {
+      "$oid": "61aeba58c3ebc20b3407cb63"
+    }
+  ],
+  "firstName": "John",
+  "lastName": "Doe",
+  "username": "jdoe1234",
+  "email": "e@email.com",
+  "passwordHash": "$2a$10$xcCDtLLY.NBS5SBIfPb/R.ABQrUJZxZwLP2kN6JALGi6/s.rCGxLy",
+  "createdAt": {
+    "$date": "2021-12-06T01:56:50.296Z"
+  },
+  "updatedAt": {
+    "$date": "2021-12-07T01:35:20.016Z"
+  },
+  "__v": 17
+},{
+  "_id": {
+    "$oid": "61ad7fe43a4b5b51a01f54ec"
+  },
+  "top5Lists": [
+    {
+      "$oid": "61ad7ffc3a4b5b51a01f54f8"
+    },
+    {
+      "$oid": "61ad80133a4b5b51a01f550c"
+    }
+  ],
+  "firstName": "Marco",
+  "lastName": "Polo",
+  "username": "mpolo1234",
+  "email": "e2@email.com",
+  "passwordHash": "$2a$10$IY4diIpLv27GxjjzZ9313e1XTDNaa85PB9lUYpXtRJqqpo3KTx73W",
+  "createdAt": {
+    "$date": "2021-12-06T03:13:40.912Z"
+  },
+  "updatedAt": {
+    "$date": "2021-12-06T03:14:27.743Z"
+  },
+  "__v": 2
+},{
+  "_id": {
+    "$oid": "61ae8c66cb4606478861b18f"
+  },
+  "top5Lists": [],
+  "firstName": "Guest",
+  "lastName": "Guest",
+  "username": "Guest",
+  "email": "Guest",
+  "passwordHash": "$2a$10$yE8xGUSc63maLUKQuaXx0utJRH1iJoIj5IPK.7WiJBifujeGaUrVy",
+  "createdAt": {
+    "$date": "2021-12-06T22:19:18.339Z"
+  },
+  "updatedAt": {
+    "$date": "2021-12-06T22:19:18.339Z"
+  },
+  "__v": 0
+}]
