@@ -50,6 +50,9 @@ function ListCard(props) {
     const { idNamePair, selected } = props;
     const [expanded, setExpanded] = useState(false);
 
+    const [like, toggleLike] = useState(false);
+    const [dislike, toggleDislike] = useState(false);
+
     const handleExpandClick = () => {
         setExpanded(!expanded);
         if (!expanded)
@@ -118,6 +121,13 @@ function ListCard(props) {
         store.clickedDislike(idNamePair._id, idNamePair.username);
     }
 
+    // if (idNamePair.likes.includes(auth.user.username)) {
+    //     toggleLike(true);
+    // } else if (idNamePair.dislikes.includes(auth.user.username)) {
+    //     toggleDislike(true);
+    // }
+
+
     let selectClass = "unselected-list-card";
     if (selected) {
         selectClass = "selected-list-card";
@@ -164,6 +174,7 @@ function ListCard(props) {
                     }
                     </Grid>
                 </Grid>
+                break;
             }
         }
     }
@@ -186,11 +197,11 @@ function ListCard(props) {
                     <Grid item xs={4}>
                         <Grid container spacing={4} direction="column">
                             <Grid item xs={2} hidden={auth.user.username === "Guest"}>
-                                <IconButton aria-label='like' onClick={handleLike}>
+                                <IconButton aria-label='like' onClick={handleLike} disabled={idNamePair.dislikes.includes(auth.user.username)}>
                                     <ThumbUpOffAltOutlinedIcon fontSize="large" />
                                     <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.likes.length}</Box>
                                 </IconButton>
-                                <IconButton aria-label='dislike' onClick={handleDislike}>
+                                <IconButton aria-label='dislike' onClick={handleDislike} disabled={idNamePair.likes.includes(auth.user.username)}>
                                     <ThumbDownOffAltOutlinedIcon fontSize="large" />
                                     <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.dislikes.length}</Box>
                                 </IconButton>

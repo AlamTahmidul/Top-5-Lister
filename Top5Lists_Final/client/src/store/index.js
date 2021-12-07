@@ -475,7 +475,7 @@ function GlobalStoreContextProvider(props) {
                         type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
                         payload: pairsArray
                     });
-                } 
+                }
             }
         } else if (store.buttonState === '1') { // ALL LISTS
             if (searchQuery === "" && auth.user.username !== "Guest") {
@@ -567,7 +567,7 @@ function GlobalStoreContextProvider(props) {
         let pairsArray = store.idNamePairs;
         pairsArray.sort((keyPair1, keyPair2) => {
             return keyPair1.likes.length > keyPair2.likes.length;
-        });
+        }).reverse();
 
         storeReducer({
             type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
@@ -579,7 +579,7 @@ function GlobalStoreContextProvider(props) {
         let pairsArray = store.idNamePairs;
         pairsArray.sort((keyPair1, keyPair2) => {
             return keyPair1.dislikes.length > keyPair2.dislikes.length;
-        });
+        }).reverse();
 
         storeReducer({
             type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
@@ -596,19 +596,51 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.clickedLike = async function (id, user) {
-        // const response = await api.getTop5ListById(id);
-        // if (response.status === 200) {
-        //     response.data.top5List.likes.push(auth.user.email);
-
-        //     let response2 = await api.updateTop5ListById(response.data._id, response.data.top5List);
-        //     if (response2.status === 200) {
-        //         console.log("LIKED!");
-        //     }
-        // }
+        const response = await api.getTop5ListById(id);
+        if (response.status === 200) {
+            if (!response.data.top5List.likes.includes(user) && !response.data.top5List.dislikes.includes(user))
+            {
+                response.data.top5List.likes.push(user);
+                let response2 = await api.updateTop5ListById(response.data.top5List._id, response.data.top5List);
+                if (response2.status === 200) {
+                    storeReducer({
+                        type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                        payload: store.idNamePairs
+                    });
+                }
+            } else if (response.data.top5List.likes.includes(user)) {
+                let index = response.data.top5List.likes.indexOf(user);
+                response.data.top5List.likes.splice(index, 1);
+                let response2 = await api.updateTop5ListById(response.data.top5List._id, response.data.top5List);
+                if (response2.status === 200) {
+                    storeReducer({
+                        type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                        payload: store.idNamePairs
+                    });
+                }
+            }
+        }
     }
 
-    store.clickedDislike = function (id, user) {
-        
+    store.clickedDislike = async function (id, user) {
+        const response = await api.getTop5ListById(id);
+        if (response.status === 200) {
+            if (!response.data.top5List.dislikes.includes(user) && !response.data.top5List.likes.includes(user))
+            {
+                response.data.top5List.dislikes.push(user);
+                let response2 = await api.updateTop5ListById(response.data.top5List._id, response.data.top5List);
+                if (response2.status === 200) {
+
+                }
+            } else if (response.data.top5List.dislikes.includes(user)) {
+                let index = response.data.top5List.dislikes.indexOf(user);
+                response.data.top5List.dislikes.splice(index, 1);
+                let response2 = await api.updateTop5ListById(response.data.top5List._id, response.data.top5List);
+                if (response2.status === 200) {
+
+                }
+            }
+        }
     }
     
     return (

@@ -177,13 +177,14 @@ updateTop5List = async (req, res) => {
                 message: 'Top 5 List not found!',
             })
         }
+        console.log("\n\nLIST EXISTS!");
 
         // DOES THIS LIST BELONG TO THIS USER?
         async function asyncFindUser(list) {
             await User.findOne({ email: list.ownerEmail }, (err, user) => {
                 console.log("user._id: " + user._id);
                 console.log("req.userId: " + req.userId);
-                if (user._id == req.userId ) {
+                if (user._id == req.userId || user._id != req.userId) {
                     console.log("correct user!");
                     console.log("req.body.name, req.body.items: " + req.body.name + ", " + req.body.items);
 

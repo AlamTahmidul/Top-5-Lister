@@ -22,13 +22,16 @@ function Statusbar() {
     }
 
     function handleUpdateText(event) {
-        setnewText(event.target.value);
+        if (event.target.value == "")
+            setnewText("default text");
+        else
+            setnewText(event.target.value);
     }
 
     if (store.currentList && (auth.loggedIn && auth.user.username !== "Guest"))
         text = store.currentList.name
     output = <div id="top5-statusbar" style={{background:"transparent"}} >
-        <TextField
+        {/* <TextField
                 margin="normal"
                 required
                 fullWidth
@@ -43,7 +46,8 @@ function Statusbar() {
                 inputProps={{style: {fontSize: 48}}}
                 InputLabelProps={{style: {fontSize: 24}}}
                 autoFocus
-            />
+            /> */}
+            <TextField required id="outlined-basic" label="Search" variant="outlined" onChange={handleUpdateText} onKeyPress={handleKeyPress}/>
     </div>
     if (!store.currentList)
         output = "";
