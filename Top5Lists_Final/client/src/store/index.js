@@ -47,7 +47,7 @@ function GlobalStoreContextProvider(props) {
         itemActive: false,
         listMarkedForDeletion: null,
         currentlyOpenedLists: [],
-        buttonState: 0
+        buttonState: '0'
     });
     const history = useHistory();
 
@@ -72,7 +72,7 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     currentlyOpenedLists: store.currentlyOpenedLists,
-                    buttonState: 0
+                    buttonState: '0'
                 });
             }
             // STOP EDITING THE CURRENT LIST
@@ -85,7 +85,7 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     currentlyOpenedLists: store.currentlyOpenedLists,
-                    buttonState: 0
+                    buttonState: '0'
                 })
             }
             // CREATE A NEW LIST
@@ -98,7 +98,7 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     currentlyOpenedLists: store.currentlyOpenedLists,
-                    buttonState: 0
+                    buttonState: '0'
                 })
             }
             // GET ALL THE LISTS SO WE CAN PRESENT THEM
@@ -150,7 +150,7 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     currentlyOpenedLists: store.currentlyOpenedLists,
-                    buttonState: 0
+                    buttonState: '0'
                 });
             }
             // START EDITING A LIST ITEM
@@ -163,7 +163,7 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: true,
                     listMarkedForDeletion: null,
                     currentlyOpenedLists: store.currentlyOpenedLists,
-                    buttonState: 0
+                    buttonState: '0'
                 });
             }
             // START EDITING A LIST NAME
@@ -176,7 +176,7 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     currentlyOpenedLists: store.currentlyOpenedLists,
-                    buttonState: 0
+                    buttonState: '0'
                 });
             }
             // UPDATE OPENED LISTS
@@ -193,7 +193,7 @@ function GlobalStoreContextProvider(props) {
                 });
             }
             // Get BUTTON STATE
-            case GlobalStoreActionType.SET_OPENED_LISTS: {
+            case GlobalStoreActionType.SET_BUTTON_STATE: {
                 return setStore({
                     idNamePairs: store.idNamePairs,
                     currentList: store.currentList,
@@ -461,21 +461,130 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
-    store.loadIdNamePairsByState = function (state) {
-        switch (state) {
-            case 0:
+    store.loadIdNamePairsBySearch = async function (searchQuery) {
+        console.log("RUNNING QUERY: " + searchQuery + " on state " + store.buttonState);
+        if (store.buttonState === '0') {
+            if (searchQuery === "") {
                 store.loadIdNamePairs();
-                break;
-            case 1:
-                
-                break;
-            case 2:
-
-                break;
-            case 3:
-
-                break;
+            } else 
+            {
+                let response = await api.getTop5ListPairsByQuery("home," + searchQuery);
+                if (response.status === 200) {
+                    let pairsArray = response.data.idNamePairs;
+                    storeReducer({
+                        type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                        payload: pairsArray
+                    });
+                } 
+            }
+        } else if (store.buttonState === '1') { // ALL LISTS
+            if (searchQuery === "" && auth.user.username !== "Guest") {
+                let response = await api.getTop5ListPairsByQuery("all," + searchQuery);
+                if (response.status === 200) {
+                    let pairsArray = response.data.idNamePairs;
+                    storeReducer({
+                        type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                        payload: pairsArray
+                    });
+                }
+            } 
+            else 
+            {
+                let response = await api.getTop5ListPairsByQuery("all," + searchQuery);
+                if (response.status === 200) {
+                    let pairsArray = response.data.idNamePairs;
+                    storeReducer({
+                        type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                        payload: pairsArray
+                    });
+                }
+            }
+        } else if (store.buttonState === '2') { // ALL LIST-SPEC=ISER
+            if (searchQuery === "") {
+                let response = await api.getTop5ListPairsByQuery("all-user," + searchQuery);
+                if (response.status === 200) {
+                    let pairsArray = response.data.idNamePairs;
+                    storeReducer({
+                        type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                        payload: pairsArray
+                    });
+                }
+            } 
+            else 
+            {
+                let response = await api.getTop5ListPairsByQuery("all-user," + searchQuery);
+                if (response.status === 200) {
+                    let pairsArray = response.data.idNamePairs;
+                    storeReducer({
+                        type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                        payload: pairsArray
+                    });
+                }
+            }
+        } else if (store.buttonState === '3') {  // COMMUNITY LISTS: TODO
+            // store.loadIdNamePairsByQuery({"community": searchQuery});
         }
+
+    }
+
+    store.sortByDateNewest = function() {
+        let pairsArray = store.idNamePairs;
+        pairsArray.sort((keyPair1, keyPair2) => {
+            return keyPair1.createdAt.localeCompare(keyPair2.createdAt, 'en', {ignorePunctuation: true});
+        });
+
+        storeReducer({
+            type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+            payload: pairsArray
+        });
+    }
+
+    store.sortByDateOldest = function() {
+        let pairsArray = store.idNamePairs;
+        pairsArray.sort((keyPair1, keyPair2) => {
+            return keyPair1.createdAt.localeCompare(keyPair2.createdAt, 'en', {ignorePunctuation: true});
+        }).reverse();
+
+        storeReducer({
+            type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+            payload: pairsArray
+        });
+    }
+
+    store.sortByViews = function() {
+        let pairsArray = store.idNamePairs;
+        pairsArray.sort((keyPair1, keyPair2) => {
+            return keyPair1.views > keyPair2.views;
+        }).reverse();
+
+        storeReducer({
+            type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+            payload: pairsArray
+        });
+    }
+
+    store.sortByLikes = function() {
+        let pairsArray = store.idNamePairs;
+        pairsArray.sort((keyPair1, keyPair2) => {
+            return keyPair1.likes.length > keyPair2.likes.length;
+        });
+
+        storeReducer({
+            type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+            payload: pairsArray
+        });
+    }
+
+    store.sortByDislikes = function () {
+        let pairsArray = store.idNamePairs;
+        pairsArray.sort((keyPair1, keyPair2) => {
+            return keyPair1.dislikes.length > keyPair2.dislikes.length;
+        });
+
+        storeReducer({
+            type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+            payload: pairsArray
+        });
     }
 
     store.setButtonStateFrom = function (state) {
@@ -483,8 +592,25 @@ function GlobalStoreContextProvider(props) {
             type: GlobalStoreActionType.SET_BUTTON_STATE,
             payload: state
         });
+        console.log("CHanging SET TO: " + state);
     }
 
+    store.clickedLike = async function (id, user) {
+        // const response = await api.getTop5ListById(id);
+        // if (response.status === 200) {
+        //     response.data.top5List.likes.push(auth.user.email);
+
+        //     let response2 = await api.updateTop5ListById(response.data._id, response.data.top5List);
+        //     if (response2.status === 200) {
+        //         console.log("LIKED!");
+        //     }
+        // }
+    }
+
+    store.clickedDislike = function (id, user) {
+        
+    }
+    
     return (
         <GlobalStoreContext.Provider value={{
             store

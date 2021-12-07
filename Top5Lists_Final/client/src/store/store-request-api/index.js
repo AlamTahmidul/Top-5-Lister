@@ -45,13 +45,15 @@ export const updateTop5ListById = (id, top5List) => {
         top5List : top5List
     })
 }
+export const getTop5ListPairsByQuery = (query) => api.get(`/top5listgetpairsbyquery/${query}`)
 
 const apis = {
     createTop5List,
     deleteTop5ListById,
     getTop5ListById,
     getTop5ListPairs,
-    updateTop5ListById
+    updateTop5ListById,
+    getTop5ListPairsByQuery
 }
 
 export default apis

@@ -9,5 +9,7 @@ router.get('/top5list/:id', auth.verify, Top5ListController.getTop5ListById)
 router.get('/top5listpairs', auth.verify, Top5ListController.getTop5ListPairs)
 router.get('/top5lists', auth.verify, Top5ListController.getTop5Lists)
 router.put('/top5list/:id', auth.verify, Top5ListController.updateTop5List)
+router.get('/top5listgetall', auth.byp, Top5ListController.getTop5ListAll)
+router.get('/top5listgetpairsbyquery/:query', auth.byp, Top5ListController.getTop5ListPairsByQuery)
 
 module.exports = router

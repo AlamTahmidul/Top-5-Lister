@@ -83,6 +83,16 @@ function AuthContextProvider(props) {
     }
 
     auth.loginUser = async function(email, password) {
+        if (auth.loggedIn && auth.user.username === "Guest") {
+            const response = await api.logoutUser();
+            if (response.status === 200) {
+                authReducer( {
+                    type: AuthActionType.LOGOUT_USER,
+                    payload: null
+                })
+                history.push("/");
+            }
+        }
         const response = await api.loginUser(email, password);
         if (response.status === 200) {
             console.log("IN LOGIN USER: ");
@@ -126,15 +136,20 @@ function AuthContextProvider(props) {
         }
     }
 
-    auth.setGuestAccount = function() {
-        let user = {email: "Guest", firstName: "Guest", lastName: "Guest", username: "Guest"};
-        authReducer({
-            type: AuthActionType.LOGIN_USER,
-            payload: {
-                user: user
+    auth.setGuestAccount = async function() {
+        const response = await api.loginUser("Guest", "guest1234");
+            if (response.status === 200) {
+                console.log("IN LOGIN USER: ");
+                console.log(response.data.user);
+                authReducer({
+                    type: AuthActionType.LOGIN_USER,
+                    payload: {
+                        user: response.data.user
+                    }
+                })
+                history.push("/");
             }
-        })
-        history.push("/");
+
     }
 
     return (

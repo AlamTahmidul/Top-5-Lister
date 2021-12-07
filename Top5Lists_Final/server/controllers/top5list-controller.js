@@ -183,7 +183,7 @@ updateTop5List = async (req, res) => {
             await User.findOne({ email: list.ownerEmail }, (err, user) => {
                 console.log("user._id: " + user._id);
                 console.log("req.userId: " + req.userId);
-                if (user._id == req.userId) {
+                if (user._id == req.userId ) {
                     console.log("correct user!");
                     console.log("req.body.name, req.body.items: " + req.body.name + ", " + req.body.items);
 
@@ -221,6 +221,251 @@ updateTop5List = async (req, res) => {
         asyncFindUser(top5List);
     })
 }
+getTop5ListAll = async (req, res) => {
+    await Top5List.find({}, (err, top5Lists) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+        if (!top5Lists.length) {
+            return res
+                .status(404)
+                .json({ success: false, error: `Top 5 Lists not found` })
+        }
+        return res.status(200).json({ success: true, data: top5Lists })
+    }).catch(err => console.log(err))
+}
+getTop5ListPairsByQuery = async (req, res) => {
+    console.log("\ngetTop5ListPairsByQuery");
+    const query = req.params.query;
+    const splitPoint = query.indexOf(",");
+    const queryType = query.substring(0, splitPoint);
+    const querySearch = query.substring(splitPoint + 1);
+    console.log("QUERY TYPE: " + queryType + ", querySearch: " + querySearch);
+
+    if (queryType === "home") {
+        await Top5List.find( { name: new RegExp("^" + querySearch, 'i') }, (err, top5Lists) => {
+            console.log("FOUND HOME LISTS!");
+            if (err) {
+                return res.status(400).json({ success: false, error: err })
+            }
+            if (!top5Lists) { // HANDLE THE CASE THAT THERE ARE NO RESULTS
+                console.log("!top5Lists.length");
+                return res
+                    .status(202)
+                    .json({ success: false, error: 'Top 5 Lists not found', idNamePairs: [] })
+            }
+            else {
+                console.log("Send the Top5List pairs IN BYQUERY");
+                // PUT ALL THE LISTS INTO ID, NAME PAIRS
+                let pairs = [];
+                for (let key in top5Lists) {
+                    let list = top5Lists[key];
+                    let pair = {
+                        _id: list._id,
+                        name: list.name,
+                        likes: list.likes,
+                        dislikes: list.dislikes,
+                        username: list.username,
+                        views: list.views,
+                        isPublished: list.isPublished,
+                        createdAt: list.createdAt,
+                        updatedAt: list.updatedAt,
+                        comments: list.comments
+                    };
+                    pairs.push(pair);
+                }
+                return res.status(200).json({ success: true, idNamePairs: pairs })
+            }
+        }).catch(err => console.log(err))
+    }
+    else if (queryType === "all") {
+        if (querySearch === "") {
+            await Top5List.find( { isPublished: true }, (err, top5Lists) => {
+                if (err) {
+                    return res.status(400).json({ success: false, error: err })
+                }
+                if (!top5Lists) { // HANDLE THE CASE THAT THERE ARE NO RESULTS
+                    console.log("!top5Lists.length");
+                    return res
+                        .status(202)
+                        .json({ success: false, error: 'Top 5 Lists not found', idNamePairs: [] })
+                }
+                else {
+                    console.log("Send the Top5List pairs IN BYQUERY");
+                    // PUT ALL THE LISTS INTO ID, NAME PAIRS
+                    let pairs = [];
+                    for (let key in top5Lists) {
+                        let list = top5Lists[key];
+                        let pair = {
+                            _id: list._id,
+                            name: list.name,
+                            likes: list.likes,
+                            dislikes: list.dislikes,
+                            username: list.username,
+                            views: list.views,
+                            isPublished: list.isPublished,
+                            createdAt: list.createdAt,
+                            updatedAt: list.updatedAt,
+                            comments: list.comments
+                        };
+                        pairs.push(pair);
+                    }
+                    return res.status(200).json({ success: true, idNamePairs: pairs })
+                }
+            }).catch(err => console.log(err))
+        } else 
+        {
+            await Top5List.find( { name: querySearch, isPublished: true }, (err, top5Lists) => {
+            if (err) {
+                return res.status(400).json({ success: false, error: err })
+            }
+            if (!top5Lists) { // HANDLE THE CASE THAT THERE ARE NO RESULTS
+                console.log("!top5Lists.length");
+                return res
+                    .status(202)
+                    .json({ success: false, error: 'Top 5 Lists not found', idNamePairs: [] })
+            }
+            else {
+                console.log("Send the Top5List pairs IN BYQUERY");
+                // PUT ALL THE LISTS INTO ID, NAME PAIRS
+                let pairs = [];
+                for (let key in top5Lists) {
+                    let list = top5Lists[key];
+                    let pair = {
+                        _id: list._id,
+                        name: list.name,
+                        likes: list.likes,
+                        dislikes: list.dislikes,
+                        username: list.username,
+                        views: list.views,
+                        isPublished: list.isPublished,
+                        createdAt: list.createdAt,
+                        updatedAt: list.updatedAt,
+                        comments: list.comments
+                    };
+                    pairs.push(pair);
+                }
+                return res.status(200).json({ success: true, idNamePairs: pairs })
+            }
+        }).catch(err => console.log(err))}
+    } else if (queryType === "all-user") {
+        console.log("USER: " + querySearch);
+        if (querySearch === "") {
+            await Top5List.find( { isPublished: true }, (err, top5Lists) => {
+                if (err) {
+                    return res.status(400).json({ success: false, error: err })
+                }
+                if (!top5Lists) { // HANDLE THE CASE THAT THERE ARE NO RESULTS
+                    console.log("!top5Lists.length");
+                    return res
+                        .status(202)
+                        .json({ success: false, error: 'Top 5 Lists not found', idNamePairs: [] })
+                }
+                else {
+                    console.log("Send the Top5List pairs IN BYQUERY");
+                    // PUT ALL THE LISTS INTO ID, NAME PAIRS
+                    let pairs = [];
+                    for (let key in top5Lists) {
+                        let list = top5Lists[key];
+                        let pair = {
+                            _id: list._id,
+                            name: list.name,
+                            likes: list.likes,
+                            dislikes: list.dislikes,
+                            username: list.username,
+                            views: list.views,
+                            isPublished: list.isPublished,
+                            createdAt: list.createdAt,
+                            updatedAt: list.updatedAt,
+                            comments: list.comments
+                        };
+                        pairs.push(pair);
+                    }
+                    return res.status(200).json({ success: true, idNamePairs: pairs })
+                }
+            }).catch(err => console.log(err))
+        } else 
+        {
+            console.log("USER FOUND?: " + querySearch);
+            await Top5List.find( { username: querySearch, isPublished: true }, (err, top5Lists) => {
+            if (err) {
+                return res.status(400).json({ success: false, error: err })
+            }
+            if (!top5Lists) { // HANDLE THE CASE THAT THERE ARE NO RESULTS
+                console.log("!top5Lists.length");
+                return res
+                    .status(202)
+                    .json({ success: false, error: 'Top 5 Lists not found', idNamePairs: [] })
+            }
+            else {
+                console.log("Send the Top5List pairs IN BYQUERY");
+                // PUT ALL THE LISTS INTO ID, NAME PAIRS
+                let pairs = [];
+                for (let key in top5Lists) {
+                    let list = top5Lists[key];
+                    let pair = {
+                        _id: list._id,
+                        name: list.name,
+                        likes: list.likes,
+                        dislikes: list.dislikes,
+                        username: list.username,
+                        views: list.views,
+                        isPublished: list.isPublished,
+                        createdAt: list.createdAt,
+                        updatedAt: list.updatedAt,
+                        comments: list.comments
+                    };
+                    pairs.push(pair);
+                }
+                return res.status(200).json({ success: true, idNamePairs: pairs })
+            }
+        }).catch(err => console.log(err))}
+    } else if (queryType === "community") {
+
+    }
+    // await User.findOne({ _id: req.userId }, (err, user) => {
+    //     console.log("find user with id " + req.userId);
+
+    //     async function asyncFindList(email) {
+    //         console.log("find all Top5Lists owned by " + email);
+    //         await Top5List.find({ ownerEmail: email }, (err, top5Lists) => {
+    //             console.log("found Top5Lists: " + JSON.stringify(top5Lists));
+    //             if (err) {
+    //                 return res.status(400).json({ success: false, error: err })
+    //             }
+    //             if (!top5Lists) {
+    //                 console.log("!top5Lists.length");
+    //                 return res
+    //                     .status(404)
+    //                     .json({ success: false, error: 'Top 5 Lists not found' })
+    //             }
+    //             else {
+    //                 console.log("Send the Top5List pairs");
+    //                 // PUT ALL THE LISTS INTO ID, NAME PAIRS
+    //                 let pairs = [];
+    //                 for (let key in top5Lists) {
+    //                     let list = top5Lists[key];
+    //                     let pair = {
+    //                         _id: list._id,
+    //                         name: list.name,
+    //                         likes: list.likes,
+    //                         dislikes: list.dislikes,
+    //                         username: list.username,
+    //                         views: list.views,
+    //                         isPublished: list.isPublished,
+    //                         createdAt: list.createdAt,
+    //                         updatedAt: list.updatedAt,
+    //                         comments: list.comments
+    //                     };
+    //                     pairs.push(pair);
+    //                 }
+    //                 return res.status(200).json({ success: true, idNamePairs: pairs })
+    //             }
+    //         }).catch(err => console.log(err))
+    //     }
+    //     asyncFindList(user.email);
+    // }).catch(err => console.log(err))
+}
 
 module.exports = {
     createTop5List,
@@ -228,5 +473,7 @@ module.exports = {
     getTop5ListById,
     getTop5ListPairs,
     getTop5Lists,
-    updateTop5List
+    updateTop5List,
+    getTop5ListAll,
+    getTop5ListPairsByQuery
 }

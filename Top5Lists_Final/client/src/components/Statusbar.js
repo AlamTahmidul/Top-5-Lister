@@ -2,6 +2,7 @@ import { useContext, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 import { Typography } from '@mui/material'
 import { TextField } from '@mui/material';
+import AuthContext from '../auth';
 
 /*
     Our Status bar React component goes at the bottom of our UI.
@@ -10,6 +11,7 @@ import { TextField } from '@mui/material';
 */
 function Statusbar() {
     const { store } = useContext(GlobalStoreContext);
+    const {auth} = useContext(AuthContext);
 
     const [newText, setnewText] = useState("");
     let text;
@@ -23,7 +25,7 @@ function Statusbar() {
         setnewText(event.target.value);
     }
 
-    if (store.currentList)
+    if (store.currentList && (auth.loggedIn && auth.user.username !== "Guest"))
         text = store.currentList.name
     output = <div id="top5-statusbar" style={{background:"transparent"}} >
         <TextField

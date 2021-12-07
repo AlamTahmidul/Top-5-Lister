@@ -30,6 +30,10 @@ function authManager() {
         }
     }
 
+    byp = (req, res, next) => {
+       next(); 
+    }
+
     verifyUser = (req) => {
         try {
             const token = req.cookies.token;

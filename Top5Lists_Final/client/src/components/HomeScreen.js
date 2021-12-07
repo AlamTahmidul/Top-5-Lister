@@ -13,7 +13,7 @@ import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import FilterListOutlinedIcon from '@mui/icons-material/FilterListOutlined';
 
-import { Grid, IconButton, SvgIcon } from '@mui/material';
+import { Grid, IconButton, MenuItem, SvgIcon, TextField, Menu } from '@mui/material';
 
 import { ReactComponent as Logo } from './../common/images/sum.svg'
 import AuthContext from '../auth';
@@ -25,22 +25,50 @@ import AuthContext from '../auth';
 */
 const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
-    const {auth} = useContext(AuthContext)
+    const {auth} = useContext(AuthContext);
 
-    const [buttonState, setButtonState] = useState(0); // 0-> Home, 1->all-published-lists, 2-> user-lists, 3-> community-lists
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
 
     useEffect(() => {
-        store.loadIdNamePairsByState(store.buttonState);
+        store.loadIdNamePairsBySearch("");
     }, []);
 
     function handleCreateNewList() {
         store.createNewList();
     }
 
-    function changeButtonState(event) {
-        setButtonState(event.currentTarget.value);
-        console.log(store.buttonState);
+    async function handleChange(event) {
+        // console.log(event.currentTarget.value + ": " + store.buttonState);
+        store.loadIdNamePairsBySearch(event.currentTarget.value);
     }
+
+    function changeButtonState(event) {
+        store.setButtonStateFrom(event.currentTarget.value);
+    }
+
+    function handleNewDate() {
+        store.sortByDateNewest();
+    }
+    function handleOldDate() {
+        store.sortByDateOldest();
+    }
+    function handleViews() {
+        store.sortByViews();
+    }
+    function handleLikes() {
+        store.sortByLikes();
+    }
+    function handleDislikes  () {
+        store.sortByDislikes();
+    }
+
 
     let listCard = "";
 
@@ -58,7 +86,7 @@ const HomeScreen = () => {
             }
             </List>;
     }
-    
+
     return (
         <div>
             <div id="top5-list-selector">
@@ -72,13 +100,40 @@ const HomeScreen = () => {
                                     <Logo />
                                 </SvgIcon>
                             </IconButton>
-                            {/* TODO: Search Bar */}
+                            <TextField id="outlined-basic" label="Search" variant="outlined" onChange={handleChange}/>
                         </Grid>
                         <Grid item xs={2}>
-                            <IconButton>
+                            <IconButton 
+                                id="demo-positioned-button"
+                                aria-controls="demo-positioned-menu"
+                                aria-haspopup="true"
+                                aria-expanded={open ? 'true' : undefined}
+                                onClick={handleClick}
+                            >
                                 <Typography disabled>SORT BY</Typography>
                                 <FilterListOutlinedIcon fontSize="large"/>
                             </IconButton>
+                            <Menu
+                                id="demo-positioned-menu"
+                                aria-labelledby="demo-positioned-button"
+                                anchorEl={anchorEl}
+                                open={open}
+                                onClose={handleClose}
+                                anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'left',
+                                }}
+                                transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'left',
+                                }}
+                            >
+                                <MenuItem onClick={handleNewDate}>Publish Date (Newest)</MenuItem>
+                                <MenuItem onClick={handleOldDate}>Publish Date (Oldest)</MenuItem>
+                                <MenuItem onClick={handleViews}>Views</MenuItem>
+                                <MenuItem onClick={handleLikes}>Likes</MenuItem>
+                                <MenuItem onClick={handleDislikes}>Dislikes</MenuItem>
+                            </Menu>
                         </Grid>
                     </Grid>
 

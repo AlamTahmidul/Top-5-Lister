@@ -18,6 +18,7 @@ import KeyboardDoubleArrowDownRoundedIcon from '@mui/icons-material/KeyboardDoub
 import ThumbUpOffAltOutlinedIcon from '@mui/icons-material/ThumbUpOffAltOutlined';
 import ThumbDownOffAltOutlinedIcon from '@mui/icons-material/ThumbDownOffAltOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import AuthContext from '../auth';
 
 
 
@@ -42,6 +43,7 @@ const ExpandMore = styled((props) => {
 
 function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
+    const {auth} = useContext(AuthContext);
 
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
@@ -105,6 +107,15 @@ function ListCard(props) {
     }
     function handleUpdateText(event) {
         setText(event.target.value);
+    }
+
+    function handleLike() {
+        console.log(idNamePair);
+        store.clickedLike(idNamePair._id, idNamePair.username);
+    }
+
+    function handleDislike() {
+        store.clickedDislike(idNamePair._id, idNamePair.username);
     }
 
     let selectClass = "unselected-list-card";
@@ -174,18 +185,18 @@ function ListCard(props) {
 
                     <Grid item xs={4}>
                         <Grid container spacing={4} direction="column">
-                            <Grid item xs={2}>
-                                <IconButton aria-label='like'>
+                            <Grid item xs={2} hidden={auth.user.username === "Guest"}>
+                                <IconButton aria-label='like' onClick={handleLike}>
                                     <ThumbUpOffAltOutlinedIcon fontSize="large" />
                                     <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.likes.length}</Box>
                                 </IconButton>
-                                <IconButton aria-label='dislike'>
+                                <IconButton aria-label='dislike' onClick={handleDislike}>
                                     <ThumbDownOffAltOutlinedIcon fontSize="large" />
                                     <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.dislikes.length}</Box>
                                 </IconButton>
                                 <IconButton onClick={(event) => {
                                     handleDeleteList(event, idNamePair._id)
-                                }} aria-label='delete'>
+                                }} aria-label='delete' hidden={auth.user.username !== idNamePair.username}>
                                     <DeleteOutlinedIcon fontSize="large" />
                                 </IconButton>
                             </Grid>
