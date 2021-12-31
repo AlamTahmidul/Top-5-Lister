@@ -38,7 +38,7 @@ export default function SplashScreen() {
             </div>
             <div>
                 <Button sx={{border: 1}} style={{maxWidth: defSize + 'px', maxHeight: defSize + 'px', minWidth: defSize + 'px', minHeight: defSize + 'px', backgroundColor: "#d4af37", color: "black"}} variant="text" size="large" onClick={handleGuest}>
-                    <b>Continue as Guest (TODO)</b>
+                    <b>Continue as Guest</b>
                 </Button>
             </div>
             <div> <Typography variant="h5" color="#d4af37" paddingTop="3%"><b>Developed by: Tahmidul Alam</b></Typography></div>

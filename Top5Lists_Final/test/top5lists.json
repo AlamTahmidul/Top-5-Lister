@@ -9,21 +9,23 @@
     "Item 4",
     "Item 5"
   ],
-  "likes": [],
+  "likes": [
+    "jdoe1234"
+  ],
   "dislikes": [],
   "name": "New List",
   "ownerEmail": "e@email.com",
   "username": "jdoe1234",
-  "views": 7,
+  "views": 32,
   "isPublished": true,
   "comments": [],
   "createdAt": {
     "$date": "2021-12-07T00:01:20.665Z"
   },
   "updatedAt": {
-    "$date": "2021-12-07T03:00:47.517Z"
+    "$date": "2021-12-07T04:03:15.336Z"
   },
-  "__v": 5
+  "__v": 19
 },{
   "_id": {
     "$oid": "61aeba58c3ebc20b3407cb63"
@@ -35,19 +37,77 @@
     "?",
     "?"
   ],
-  "likes": [],
+  "likes": [
+    "jdoe1234"
+  ],
   "dislikes": [],
   "name": "U",
   "ownerEmail": "e@email.com",
   "username": "jdoe1234",
-  "views": 2,
+  "views": 5,
   "isPublished": false,
   "comments": [],
   "createdAt": {
     "$date": "2021-12-07T01:35:20.020Z"
   },
   "updatedAt": {
-    "$date": "2021-12-07T03:00:50.203Z"
+    "$date": "2021-12-07T03:46:24.127Z"
   },
-  "__v": 0
+  "__v": 1
+},{
+  "_id": {
+    "$oid": "61aedb4d4e864f2eb4270103"
+  },
+  "items": [
+    "Item 1",
+    "Item 2",
+    "Item 3",
+    "Item 4",
+    "Item 5"
+  ],
+  "likes": [],
+  "dislikes": [
+    "jdoe1234"
+  ],
+  "name": "Another List?",
+  "ownerEmail": "e@email.com",
+  "username": "jdoe1234",
+  "views": 2,
+  "isPublished": false,
+  "comments": [],
+  "createdAt": {
+    "$date": "2021-12-07T03:55:57.787Z"
+  },
+  "updatedAt": {
+    "$date": "2021-12-07T03:57:43.599Z"
+  },
+  "__v": 6
+},{
+  "_id": {
+    "$oid": "61aedeb64e864f2eb4270400"
+  },
+  "items": [
+    "Item 1",
+    "Item 2",
+    "Item 3",
+    "Item 4",
+    "Item 5"
+  ],
+  "likes": [
+    "mpolo1234"
+  ],
+  "dislikes": [],
+  "name": "New List Nam",
+  "ownerEmail": "e2@email.com",
+  "username": "mpolo1234",
+  "views": 1,
+  "isPublished": true,
+  "comments": [],
+  "createdAt": {
+    "$date": "2021-12-07T04:10:30.431Z"
+  },
+  "updatedAt": {
+    "$date": "2021-12-07T04:11:03.117Z"
+  },
+  "__v": 6
 }]
