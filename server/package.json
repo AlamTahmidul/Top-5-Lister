@@ -12,5 +12,9 @@
     "express": "^4.16.4",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.7.5"
+  },
+  "scripts": {
+    "clean": "rm -rf node_modules && npm install",
+    "start": "nodemon index.js"
   }
 }

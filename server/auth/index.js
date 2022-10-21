@@ -1,22 +1,22 @@
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
 
 function authManager() {
     verify = (req, res, next) => {
-        console.log("req: " + req);
-        console.log("next: " + next);
-        console.log("Who called verify?");
+        // console.log("req: " + req);
+        // console.log("next: " + next);
+        // console.log("Who called verify?");
         try {
             const token = req.cookies.token;
             if (!token) {
                 return res.status(401).json({
                     loggedIn: false,
                     user: null,
-                    errorMessage: "Unauthorized"
-                })
+                    error: "Unauthorized"
+                });
             }
 
-            const verified = jwt.verify(token, process.env.JWT_SECRET)
-            console.log("verified.userId: " + verified.userId);
+            const verified = jwt.verify(token, process.env.JWT_SECRET);
+            // console.log("verified.userId: " + verified.userId);
             req.userId = verified.userId;
 
             next();
@@ -25,13 +25,9 @@ function authManager() {
             return res.status(401).json({
                 loggedIn: false,
                 user: null,
-                errorMessage: "Unauthorized"
+                error: "Unauthorized"
             });
         }
-    }
-
-    byp = (req, res, next) => {
-       next(); 
     }
 
     verifyUser = (req) => {

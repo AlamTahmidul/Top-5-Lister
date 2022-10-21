@@ -1,5 +1,6 @@
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const ObjectId = Schema.Types.ObjectId;
 
 const Top5ListSchema = new Schema(
     {
@@ -8,12 +9,12 @@ const Top5ListSchema = new Schema(
         ownerEmail: { type: String, required: true },
         username: { type: String },
         views: {type: Number},
-        likes: { type: [String] },
-        dislikes: {type: [String] },
+        likes: { type: Number },
+        dislikes: { type: Number},
         isPublished: {type: Boolean},
-        comments: {type: Object}
+        comments: [{ type: ObjectId, ref: 'Comment' }]
     },
     { timestamps: true },
-)
+);
 
-module.exports = mongoose.model('Top5List', Top5ListSchema)
+module.exports = mongoose.model('Top5List', Top5ListSchema);

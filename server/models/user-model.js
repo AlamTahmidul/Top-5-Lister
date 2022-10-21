@@ -1,6 +1,6 @@
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
-const ObjectId = Schema.Types.ObjectId
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const ObjectId = Schema.Types.ObjectId;
 
 const UserSchema = new Schema(
     {
@@ -9,9 +9,11 @@ const UserSchema = new Schema(
         email: { type: String, required: true },
         username: {type: String, required: true},
         passwordHash: { type: String, required: true },
-        top5Lists: [{type: ObjectId, ref: 'Top5List'}]
+        top5Lists: [{type: ObjectId, ref: 'Top5List'}],
+        likes: [{type: ObjectId, ref: 'Top5List'}],
+        dislikes: [{type: ObjectId, ref: 'Top5List'}]
     },
     { timestamps: true },
-)
+);
 
-module.exports = mongoose.model('User', UserSchema)
+module.exports = mongoose.model('User', UserSchema);
