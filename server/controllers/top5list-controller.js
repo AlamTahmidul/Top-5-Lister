@@ -35,15 +35,12 @@ module.exports.createTop5List = (req, res) => {
     }
 
     // REMEMBER THAT OUR AUTH MIDDLEWARE GAVE THE userId TO THE req
-    // console.log("top5List created for " + req.userId);
     User.findOne({ _id: req.userId }, (err, user) => {
-        // console.log("user found: " + JSON.stringify(user));
         top5List.ownerEmail = user.email;
         user.top5Lists.push(top5List._id);
         user
             .save()
             .then(() => {
-                console.log(top5List);
                 top5List
                     .save()
                     .then(() => {
@@ -125,7 +122,8 @@ module.exports.getTop5ListPairs = async (req, res) => {
                         let list = top5Lists[key];
                         let pair = {
                             _id: list._id,
-                            name: list.name
+                            name: list.name,
+                            isPublished: list.isPublished
                         };
                         pairs.push(pair);
                     }
@@ -135,19 +133,6 @@ module.exports.getTop5ListPairs = async (req, res) => {
         }
         asyncFindList(user.email);
     }).catch(err => res.status(500).json({ success: false, error: err }))
-};
-module.exports.getTop5Lists = async (req, res) => {
-    await Top5List.find({ isPublished: true }, (err, top5Lists) => {
-        if (err) {
-            return res.status(400).json({ success: false, error: err });
-        };
-        if (!top5Lists.length) {
-            return res
-                .status(404)
-                .json({ success: false, error: `Top 5 Lists not found` });
-        };
-        return res.status(200).json({ success: true, data: top5Lists })
-    }).catch(err => res.status(500).json({ success: false, error: err }));
 };
 module.exports.updateTop5List = async (req, res) => {
     const body = req.body;
@@ -200,4 +185,63 @@ module.exports.updateTop5List = async (req, res) => {
                 });
         };
     });
+};
+
+/* Community Lists */
+module.exports.getTop5CommunityListPairs = async (req, res, next) => {
+    await Top5List.aggregate(
+        [
+            { $match: { isPublished: false } },
+            { $group: { _id: "$name" } },
+            { $skip: req.body.skip || 0 },
+            { $limit: 20 }
+        ], (err, communityLists) => {
+            if (err) return res.status(500).json({ success: false, error: err });
+            if (!communityLists.length) return res.status(200).json({ success: true, top5Lists: communityLists });
+            else {
+                req.communityLists = communityLists;
+                next();
+            }
+            // return res.status(200).json({ success: true, top5Lists: communityLists });
+        }
+    );
+}
+module.exports.getTop5CommunityLists = async (req, res) => {
+    const communityLists = {};
+    const uniqueLists = req.communityLists;
+    for (list of uniqueLists) {
+        const listName = list._id;
+
+        // Fetch all lists whose name is the same
+        await Top5List.find({ name: listName, isPublished: false }, (err, publishedLists) => {
+            if (err) return res.status(500).json({ success: false, error: err });
+
+            // Filter to only get the items
+            const lists = publishedLists.map(({items, others}) => ({ items }));
+            let buffer = {};
+            lists.forEach((list) => {
+                const listItems = list.items;
+                for (let [index, item] of listItems.entries()) {
+                    buffer[item] = (buffer[item] || 0) + (index + 1);
+                };
+            });
+            
+            // Sort by highest to lowest "scores"
+            const temp = Object.entries(buffer)
+                .sort( (a, b) => (a[1] === b[1] ? 0 : (a[1] > b[1] ? - 1 : 1)) )
+                .reduce((accumulator, key, currentIndex) => {
+                    // console.log(accumulator, key);
+                    if (currentIndex < 5)
+                    {
+                        const item = key[0];
+                        accumulator[item] = buffer[item];
+                    }
+                    return accumulator;
+                }, {});
+
+            communityLists[listName] = temp;
+        });
+    }
+    // console.log(communityLists);
+    return res.status(200).json({ success: true, top5Lists: communityLists });
 };
